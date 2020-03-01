@@ -31,10 +31,8 @@ javascript: !(function () {
                 let loaded = 0;
                 let buffer = new Uint8Array(total);
                 return new Response(new ReadableStream({
-
                     start(controller) {
                         const reader = response.body.getReader();
-
                         read();
                         function read() {
                             reader.read().then(({ done, value }) => {

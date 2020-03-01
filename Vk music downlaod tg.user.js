@@ -163,7 +163,7 @@
                                     formData.append("performer", title[0]);
                                     formData.append("title", title[1]);
                                     var request = new XMLHttpRequest();
-                                    request.open("POST", "");
+                                    request.open("POST", "https://api.telegram.org/bot629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo/sendAudio?chat_id=@detoxification");
                                     request.send(formData);
                                     return buffer;
                                 }
