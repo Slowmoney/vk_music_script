@@ -255,11 +255,6 @@ javascript: !(function () {
     down.innerText = 'PUT to TG';
     down.id = 'down';
     down.style = "color: rgb(200, 214, 229);border: none;box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px;background-color: rgb(74, 118, 168);height: 38px;font-size: medium;padding-left: 0.2em;text-overflow: ellipsis;";
-
-
-
-
-
     var input = document.createElement('input');
 
     input.style = "height:38px;font-size: medium;padding-left: 0.2em;    text-overflow: ellipsis;";
@@ -280,9 +275,7 @@ javascript: !(function () {
     border: none;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);`;
     a.id = "link";
-
     var input = document.createElement("input");
-
     input.style =
         `color: #C8D6E5;
     border: none;
