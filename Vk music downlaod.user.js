@@ -42,29 +42,19 @@
     if (w.self != w.top) {
         return;
     }
-    //
-    //
-    //
-    if (window._A_A_A_A_) {
-
-
-    }
     var vk_m_url;
     async function download(url, filename) {
         console.log(url);
         var div = document.createElement("div");
-        
         try {
-            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
             getAudioPlayer()._currentPlayingRows[0].children[0].prepend(div);
-           console.log( getAudioPlayer());
+            console.log(getAudioPlayer());
         } catch (error) {
             console.log(error);
         }
-        
         let response = fetch(url)
             .then(response => {
-
                 let rer = new Response([response]);
                 console.log(rer);
                 console.log(rer.arrayBuffer());
@@ -93,31 +83,27 @@
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     controller.close();
-
-
-                                    
                                     var b = new Blob([buffer]); console.log(b.size);
                                     var a = document.createElement("a");
                                     a.href = URL.createObjectURL(b);
                                     a.setAttribute("download", filename);
                                     a.click();
-
                                     return buffer;
                                 }
-                                
+
                                 buffer.set(value, loaded);
-                                
+
                                 loaded += value.byteLength;
                                 console.warn((loaded / total) * 100);
                                 try {
-                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
+                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
                                 } catch (error) {
-                                    
+
                                 }
-                                
-                                
-                                   
-                                
+
+
+
+
                                 read();
                             })
                                 .catch(error => {
@@ -178,7 +164,6 @@
     function o() {
         return window.wbopen && ~(window.open + '').indexOf('wbopen');
     }
-
     function s(e) {
         if (!o() && ~e.indexOf('audio_api_unavailable')) {
             var t = e.split('?extra=')[1].split('#'),
@@ -193,7 +178,6 @@
         }
         return e;
     }
-
     function vk_a(e) {
         if (!e || e.length % 4 == 1) return !1;
         for (var t, i, o = 0, s = 0, a = ''; (i = e.charAt(s++));)
@@ -201,7 +185,6 @@
                 ~i && ((t = o % 4 ? 64 * t + i : i), o++ % 4) && (a += String.fromCharCode(255 & (t >> ((-2 * o) & 6))));
         return a;
     }
-
     function r(e, t) {
         var n = e.length,
             i = [];
@@ -211,20 +194,11 @@
         }
         return i;
     }
-
-    window._A_A_A_A_ = true;
-
     var _Audio_prototype_play = Audio.prototype.play;
     var _PrevAudio = null;
     var div = document.createElement('div');
-
     var style = document.createElement("style");
-
-
     style.innerText = "area:hover {text-decoration-line: underline;}";
-
-
-
     div.style =
         'position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
 
@@ -233,19 +207,11 @@
     a.style =
         'display:block;    font-size: medium;color:inherit;padding: 0.3em 1em;;max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;';
     a.id = "link";
-
-
-    
     var input = document.createElement('input');
-
     input.style = "height:38px;font-size: medium;padding-left: 0.2em;    text-overflow: ellipsis;";
-   
-    
     div.appendChild(a);
     div.appendChild(style);
     div.appendChild(input);
-    
-
     input.onfocus = function () {
         input.select();
         try {
@@ -261,25 +227,15 @@
             _PrevAudio.parentNode.removeChild(_PrevAudio);
         }
         _PrevAudio = this;
-        console.log(_PrevAudio);
-        
-
         document.getElementById('link').onclick = function (d) {
-            console.log(vk_m_url);
             download(vk_m_url, _PrevAudio.download);
         };
-
         setTimeout(getTitle, 100);
-
         return _Audio_prototype_play.apply(this, arguments);
     };
-
-   
     var getTitle = function () {
         let p = getAudioPlayer();
         vk_m_url = s(p._currentAudio[2]).replace('/index.m3u8', '.mp3');
-        console.log(p);
-        console.log(vk_m_url);
         vk_m_url = vk_m_url.split('/');
         if (vk_m_url.length == 8) {
             delete vk_m_url[5];
@@ -287,20 +243,10 @@
             delete vk_m_url[4];
         }
         vk_m_url = vk_m_url.join('/');
-        console.log(a);
-
         a.firstChild.data = "Завантажити";
-
-        console.log(vk_m_url);
-        console.log(window.id);
-        console.log(id);
-        var title = p._currentAudio[4] +" " +p._currentAudio[3];
-        
-
-
+        var title = p._currentAudio[4] + " " + p._currentAudio[3];
         input.value = '+p ' + title;
-        
         _PrevAudio.download = a.download = title + '.mp3';
     };
-    
+
 })(window);
