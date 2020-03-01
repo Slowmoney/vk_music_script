@@ -7,7 +7,7 @@ javascript: !(function () {
         var div = document.createElement("div");
         try {
             div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
-            getAudioPlayer()._currentPlayingRows[0].prepend(div);
+            getAudioPlayer()._currentPlayingRows[0].children[0].prepend(div);
             console.log(getAudioPlayer());
         } catch (error) {
             console.log(error);
@@ -76,7 +76,14 @@ javascript: !(function () {
     }
     async function put_tg(url, filename) {
         console.log(url);
-
+        var div = document.createElement("div");
+        try {
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
+            getAudioPlayer()._currentPlayingRows[0].children[0].prepend(div);
+            console.log(getAudioPlayer());
+        } catch (error) {
+            console.log(error);
+        }
         let response = fetch(url)
             .then(response => {
 
@@ -131,7 +138,10 @@ javascript: !(function () {
 
                                 loaded += value.byteLength;
 
-
+                                try {
+                                    div.style = "background-color: #2196f340;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:" + getAudioPlayer()._currentPlayingRows[0].children[0].offsetHeight + "px;";
+                                } catch (error) {
+                                }
                                 read();
                             })
                                 .catch(error => {
