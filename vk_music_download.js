@@ -8,7 +8,7 @@ javascript: !(function () {
         console.log(url);
         var div = document.createElement("div");
         div.style = "background-color: #f443364d;width: 100%;height: 88%;position: absolute;    border-radius: 4px;";
-        getAudioPlayer().subscribers[24].context.firstElementChild.prepend(div);
+        getAudioPlayer()._currentPlayingRows[0].prepend(div);
         let response = fetch(url)
             .then(response => {
 

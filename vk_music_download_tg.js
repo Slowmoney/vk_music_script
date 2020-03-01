@@ -1,35 +1,28 @@
 javascript: !(function () {
     if (window._A_A_A_A_) {
-
-
     }
     var vk_m_url;
     async function download(url, filename) {
         console.log(url);
         var div = document.createElement("div");
-
         try {
-            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer().subscribers[24].context.children[0].offsetHeight + "px;";
-            getAudioPlayer().subscribers[24].context.firstElementChild.prepend(div);
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
+            getAudioPlayer()._currentPlayingRows[0].prepend(div);
             console.log(getAudioPlayer());
         } catch (error) {
             console.log(error);
         }
-
         let response = fetch(url)
             .then(response => {
-
                 let rer = new Response([response]);
                 console.log(rer);
                 console.log(rer.arrayBuffer());
                 if (!response.ok) {
                     throw Error(response.status + ' ' + response.statusText)
                 }
-
                 if (!response.body) {
                     throw Error('ReadableStream not yet supported in this browser.')
                 }
-
                 const contentLength = response.headers.get('content-length');
                 if (!contentLength) {
                     throw Error('Content-Length response header unavailable');
@@ -47,10 +40,7 @@ javascript: !(function () {
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     controller.close();
-
-
-
-                                    var b = new Blob([buffer]); console.log(b.size);
+                                    var b = new Blob([buffer], { type: "audio/mp3" }); console.log(b.size);
                                     var a = document.createElement("a");
                                     a.href = URL.createObjectURL(b);
                                     a.setAttribute("download", filename);
@@ -58,20 +48,14 @@ javascript: !(function () {
 
                                     return buffer;
                                 }
-
                                 buffer.set(value, loaded);
 
                                 loaded += value.byteLength;
                                 console.warn((loaded / total) * 100);
                                 try {
-                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:" + getAudioPlayer().subscribers[24].context.children[0].offsetHeight + "px;";
+                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:" + getAudioPlayer()._currentPlayingRows[0].children[0].offsetHeight + "px;";
                                 } catch (error) {
-
                                 }
-
-
-
-
                                 read();
                             })
                                 .catch(error => {
@@ -135,10 +119,10 @@ javascript: !(function () {
 
                                     var blob = new Blob([b], { type: "audio/mp3" });
                                     formData.append("audio", blob, filename);
-                                    formData.append("performer",title[0]);
-                                    formData.append("title",title[1]);
+                                    formData.append("performer", title[0]);
+                                    formData.append("title", title[1]);
                                     var request = new XMLHttpRequest();
-                                    request.open("POST", "https://api.telegram.org/");
+                                    request.open("POST", "");
                                     request.send(formData);
                                     return buffer;
                                 }
@@ -258,7 +242,7 @@ javascript: !(function () {
 
     style.innerText = "area:hover {text-decoration-line: underline;}";
 
-    down.innerText = 'Save to Ydisk';
+    down.innerText = 'PUT to TG';
     down.id = 'down';
     down.style = 'border: 1px solid;height: 19px;';
 
@@ -314,7 +298,7 @@ javascript: !(function () {
         return _Audio_prototype_play.apply(this, arguments);
     };
 
-var title;
+    var title;
     var getTitle = function () {
         let p = getAudioPlayer();
         vk_m_url = s(p._currentAudio[2]).replace('/index.m3u8', '.mp3');
@@ -334,12 +318,12 @@ var title;
         console.log(vk_m_url);
         console.log(window.id);
         console.log(id);
-        title = [p._currentAudio[4] , p._currentAudio[3]];
+        title = [p._currentAudio[4], p._currentAudio[3]];
 
 
 
-        input.value = '+p ' + title[0]+" "+title[1];
+        input.value = '+p ' + title[0] + " " + title[1];
 
-        _PrevAudio.download = a.download = title[0]+" "+title[1] + '.mp3';
+        _PrevAudio.download = a.download = title[0] + " " + title[1] + '.mp3';
     };
 })();

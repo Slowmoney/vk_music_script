@@ -9,8 +9,8 @@ javascript: !(function () {
         var div = document.createElement("div");
         
         try {
-            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:"+getAudioPlayer().subscribers[24].context.children[0].offsetHeight+"px;";
-           getAudioPlayer().subscribers[24].context.firstElementChild.prepend(div); 
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
+           getAudioPlayer()._currentPlayingRows[0].prepend(div); 
            console.log( getAudioPlayer());
         } catch (error) {
             console.log(error);
@@ -64,7 +64,7 @@ javascript: !(function () {
                                 loaded += value.byteLength;
                                 console.warn((loaded / total) * 100);
                                 try {
-                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:"+getAudioPlayer().subscribers[24].context.children[0].offsetHeight+"px;";
+                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
                                 } catch (error) {
                                     
                                 }
