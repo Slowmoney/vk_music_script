@@ -135,6 +135,7 @@ javascript: !(function () {
 
                                     var blob = new Blob([b], { type: "audio/mp3" });
                                     formData.append("audio", blob, filename);
+
                                     var request = new XMLHttpRequest();
                                     request.open("POST", "https://api.telegram.org/");
                                     request.send(formData);
@@ -332,7 +333,7 @@ javascript: !(function () {
         console.log(vk_m_url);
         console.log(window.id);
         console.log(id);
-        var title = p._currentAudio[3] + " " + p._currentAudio[3];
+        var title = p._currentAudio[4] + " " + p._currentAudio[3];
 
 
 

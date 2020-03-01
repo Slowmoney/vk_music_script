@@ -248,7 +248,7 @@ javascript: !(function () {
         console.log(vk_m_url);
         console.log(window.id);
         console.log(id);
-        var title = p._currentAudio[3] +" " +p._currentAudio[3];
+        var title = p._currentAudio[4] +" " +p._currentAudio[3];
         
 
 
