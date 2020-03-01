@@ -135,7 +135,8 @@ javascript: !(function () {
 
                                     var blob = new Blob([b], { type: "audio/mp3" });
                                     formData.append("audio", blob, filename);
-
+                                    formData.append("performer",title[0]);
+                                    formData.append("title",title[1]);
                                     var request = new XMLHttpRequest();
                                     request.open("POST", "https://api.telegram.org/");
                                     request.send(formData);
@@ -313,7 +314,7 @@ javascript: !(function () {
         return _Audio_prototype_play.apply(this, arguments);
     };
 
-
+var title;
     var getTitle = function () {
         let p = getAudioPlayer();
         vk_m_url = s(p._currentAudio[2]).replace('/index.m3u8', '.mp3');
@@ -333,12 +334,12 @@ javascript: !(function () {
         console.log(vk_m_url);
         console.log(window.id);
         console.log(id);
-        var title = p._currentAudio[4] + " " + p._currentAudio[3];
+        title = [p._currentAudio[4] , p._currentAudio[3]];
 
 
 
-        input.value = '+p ' + title;
+        input.value = '+p ' + title[0]+" "+title[1];
 
-        _PrevAudio.download = a.download = title + '.mp3';
+        _PrevAudio.download = a.download = title[0]+" "+title[1] + '.mp3';
     };
 })();
