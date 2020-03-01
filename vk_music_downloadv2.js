@@ -171,15 +171,13 @@ javascript: !(function () {
     var _Audio_prototype_play = Audio.prototype.play;
     var _PrevAudio = null;
     var div = document.createElement('div');
-    var down = document.createElement('div');
+
     var style = document.createElement("style");
 
 
     style.innerText = "area:hover {text-decoration-line: underline;}";
 
-    down.innerText = 'Save to Ydisk';
-    down.id = 'down';
-    down.style = 'border: 1px solid;height: 19px;';
+
 
     div.style =
         'position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
