@@ -46,22 +46,90 @@
     //
     //
     if (window._A_A_A_A_) {
-
-
     }
     var vk_m_url;
     async function download(url, filename) {
         console.log(url);
         var div = document.createElement("div");
-        
         try {
-            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
             getAudioPlayer()._currentPlayingRows[0].children[0].prepend(div);
-           console.log( getAudioPlayer());
+            console.log(getAudioPlayer());
         } catch (error) {
             console.log(error);
         }
-        
+        let response = fetch(url)
+            .then(response => {
+                let rer = new Response([response]);
+                console.log(rer);
+                console.log(rer.arrayBuffer());
+                if (!response.ok) {
+                    throw Error(response.status + ' ' + response.statusText)
+                }
+                if (!response.body) {
+                    throw Error('ReadableStream not yet supported in this browser.')
+                }
+                const contentLength = response.headers.get('content-length');
+                if (!contentLength) {
+                    throw Error('Content-Length response header unavailable');
+                }
+                const total = parseInt(contentLength, 10);
+                let loaded = 0;
+                let buffer = new Uint8Array(total);
+                return new Response(new ReadableStream({
+
+                    start(controller) {
+                        const reader = response.body.getReader();
+
+                        read();
+                        function read() {
+                            reader.read().then(({ done, value }) => {
+                                if (done) {
+                                    controller.close();
+                                    var b = new Blob([buffer], { type: "audio/mp3" }); console.log(b.size);
+                                    var a = document.createElement("a");
+                                    a.href = URL.createObjectURL(b);
+                                    a.setAttribute("download", filename);
+                                    a.click();
+
+                                    return buffer;
+                                }
+                                buffer.set(value, loaded);
+
+                                loaded += value.byteLength;
+                                console.warn((loaded / total) * 100);
+                                try {
+                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:" + getAudioPlayer()._currentPlayingRows[0].children[0].offsetHeight + "px;";
+                                } catch (error) {
+                                }
+                                read();
+                            })
+                                .catch(error => {
+                                    console.error(error);
+                                    controller.error(error)
+                                })
+                        }
+                    }
+
+                })
+                );
+
+            })
+            .catch(error => {
+                console.error(error);
+
+            });
+    }
+    async function put_tg(url, filename) {
+        console.log(url);
+        var div = document.createElement("div");
+        try {
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:" + getAudioPlayer()._currentPlayingRows[0].offsetHeight + "px;";
+            getAudioPlayer()._currentPlayingRows[0].children[0].prepend(div);
+            console.log(getAudioPlayer());
+        } catch (error) {
+            console.log(error);
+        }
         let response = fetch(url)
             .then(response => {
 
@@ -95,29 +163,31 @@
                                     controller.close();
 
 
-                                    
+                                    console.log(buffer);
                                     var b = new Blob([buffer]); console.log(b.size);
-                                    var a = document.createElement("a");
-                                    a.href = URL.createObjectURL(b);
-                                    a.setAttribute("download", filename);
-                                    a.click();
 
+                                    console.log(formData);
+                                    console.log({ loaded, total });
+                                    var formData = new FormData();
+
+                                    var blob = new Blob([b], { type: "audio/mp3" });
+                                    formData.append("audio", blob, filename);
+                                    formData.append("performer", title[0]);
+                                    formData.append("title", title[1]);
+                                    var request = new XMLHttpRequest();
+                                    request.open("POST", "");
+                                    request.send(formData);
                                     return buffer;
                                 }
-                                
+
                                 buffer.set(value, loaded);
-                                
+
                                 loaded += value.byteLength;
-                                console.warn((loaded / total) * 100);
+
                                 try {
-                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
+                                    div.style = "background-color: #2196f340;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:" + getAudioPlayer()._currentPlayingRows[0].children[0].offsetHeight + "px;";
                                 } catch (error) {
-                                    
                                 }
-                                
-                                
-                                   
-                                
                                 read();
                             })
                                 .catch(error => {
@@ -130,12 +200,17 @@
                 })
                 );
 
+            }).then(response => {
+                console.log(response);
+                console.log(response.arrayBuffer());
             })
             .catch(error => {
                 console.error(error);
 
             });
     }
+
+
     var id = vk.id;
     var n = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=',
         i = {
@@ -217,16 +292,18 @@
     var _Audio_prototype_play = Audio.prototype.play;
     var _PrevAudio = null;
     var div = document.createElement('div');
-
+    var down = document.createElement('div');
     var style = document.createElement("style");
 
 
     style.innerText = "area:hover {text-decoration-line: underline;}";
 
-
+    down.innerText = 'PUT to TG';
+    down.id = 'down';
+    down.style = 'border: 1px solid;height: 19px;';
 
     div.style =
-        'position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
+        'position:fixed;left:0;bottom:0;right:auto;height: 100px;bottom:0;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
 
     var a = document.createElement('area');
     a.appendChild(document.createTextNode('?'));
@@ -235,16 +312,16 @@
     a.id = "link";
 
 
-    
+
     var input = document.createElement('input');
 
     input.style = "height:38px;font-size: medium;padding-left: 0.2em;    text-overflow: ellipsis;";
-   
-    
+
+
     div.appendChild(a);
     div.appendChild(style);
     div.appendChild(input);
-    
+    div.appendChild(down);
 
     input.onfocus = function () {
         input.select();
@@ -262,19 +339,22 @@
         }
         _PrevAudio = this;
         console.log(_PrevAudio);
-        
+
 
         document.getElementById('link').onclick = function (d) {
             console.log(vk_m_url);
             download(vk_m_url, _PrevAudio.download);
         };
-
+        document.getElementById('down').onclick = function (d) {
+            console.log(vk_m_url);
+            put_tg(vk_m_url, _PrevAudio.download);
+        };
         setTimeout(getTitle, 100);
 
         return _Audio_prototype_play.apply(this, arguments);
     };
 
-   
+    var title;
     var getTitle = function () {
         let p = getAudioPlayer();
         vk_m_url = s(p._currentAudio[2]).replace('/index.m3u8', '.mp3');
@@ -294,13 +374,13 @@
         console.log(vk_m_url);
         console.log(window.id);
         console.log(id);
-        var title = p._currentAudio[4] +" " +p._currentAudio[3];
-        
+        title = [p._currentAudio[4], p._currentAudio[3]];
 
 
-        input.value = '+p ' + title;
-        
-        _PrevAudio.download = a.download = title + '.mp3';
+
+        input.value = '+p ' + title[0] + " " + title[1];
+
+        _PrevAudio.download = a.download = title[0] + " " + title[1] + '.mp3';
     };
     
 })(window);
