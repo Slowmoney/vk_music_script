@@ -199,7 +199,7 @@ javascript: !(function() {
     `display:block;font-size: medium;color:inherit;padding: 0.3em 1em;
     max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;
     border: none;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);`;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);text-decoration: none;`;
   a.id = "link";
 
   var input = document.createElement("input");
