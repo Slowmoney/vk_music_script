@@ -10,7 +10,7 @@ javascript: !(function () {
         
         try {
             div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:"+getAudioPlayer()._currentPlayingRows[0].offsetHeight+"px;";
-           getAudioPlayer()._currentPlayingRows[0].prepend(div); 
+            getAudioPlayer()._currentPlayingRows[0].children[0].prepend(div);
            console.log( getAudioPlayer());
         } catch (error) {
             console.log(error);
