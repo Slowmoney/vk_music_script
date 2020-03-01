@@ -241,7 +241,7 @@ javascript: !(function () {
         return i;
     }
 
-    window._A_A_A_A_ = true;
+
 
     var _Audio_prototype_play = Audio.prototype.play;
     var _PrevAudio = null;
@@ -254,23 +254,44 @@ javascript: !(function () {
 
     down.innerText = 'PUT to TG';
     down.id = 'down';
-    down.style = 'border: 1px solid;height: 19px;';
+    down.style = "color: rgb(200, 214, 229);border: none;box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px;background-color: rgb(74, 118, 168);height: 38px;font-size: medium;padding-left: 0.2em;text-overflow: ellipsis;";
 
-    div.style =
-        'position:fixed;left:0;bottom:0;right:auto;height: 100px;bottom:0;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
 
-    var a = document.createElement('area');
-    a.appendChild(document.createTextNode('?'));
-    a.style =
-        'display:block;    font-size: medium;color:inherit;padding: 0.3em 1em;;max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;';
-    a.id = "link";
 
 
 
     var input = document.createElement('input');
 
     input.style = "height:38px;font-size: medium;padding-left: 0.2em;    text-overflow: ellipsis;";
+    div.style =
+        `position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:200;border:1px solid white;padding: 12px;background:#4A76A8;
+    color:#C8D6E5;margin-left:50px;margin-bottom:25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius:3px;`;
 
+    var a = document.createElement("area");
+    a.appendChild(document.createTextNode("?"));
+    a.style =
+        `display:block;font-size: medium;color:inherit;padding: 0.3em 1em;
+    max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);`;
+    a.id = "link";
+
+    var input = document.createElement("input");
+
+    input.style =
+        `color: #C8D6E5;
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background-color: #4A76A8;
+    height: 38px;
+    font-size: medium;
+    padding-left: 0.2em;
+    text-overflow: ellipsis;`;
 
     div.appendChild(a);
     div.appendChild(style);
