@@ -7,8 +7,15 @@ javascript: !(function () {
     async function download(url, filename) {
         console.log(url);
         var div = document.createElement("div");
-        div.style = "background-color: #f443364d;width: 100%;height: 88%;position: absolute;    border-radius: 4px;";
-        getAudioPlayer().subscribers[24].context.firstElementChild.prepend(div);
+        
+        try {
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height:"+getAudioPlayer().subscribers[24].context.children[0].offsetHeight+"px;";
+           getAudioPlayer().subscribers[24].context.firstElementChild.prepend(div); 
+           console.log( getAudioPlayer());
+        } catch (error) {
+            console.log(error);
+        }
+        
         let response = fetch(url)
             .then(response => {
 
@@ -42,7 +49,7 @@ javascript: !(function () {
                                     controller.close();
 
 
-                                    console.log(buffer);
+                                    
                                     var b = new Blob([buffer]); console.log(b.size);
                                     var a = document.createElement("a");
                                     a.href = URL.createObjectURL(b);
@@ -51,12 +58,20 @@ javascript: !(function () {
 
                                     return buffer;
                                 }
-                                console.log(value);
+                                
                                 buffer.set(value, loaded);
-                                console.log(buffer);
+                                
                                 loaded += value.byteLength;
-                                console.log({ loaded, total });
-                                div.style = "background-color: #c3d0dd;    border-radius: 4px;height: 88%;position: absolute;width:" + (loaded / total) * 100 + "%;";
+                                console.warn((loaded / total) * 100);
+                                try {
+                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height:"+getAudioPlayer().subscribers[24].context.children[0].offsetHeight+"px;";
+                                } catch (error) {
+                                    
+                                }
+                                
+                                
+                                   
+                                
                                 read();
                             })
                                 .catch(error => {
@@ -69,9 +84,6 @@ javascript: !(function () {
                 })
                 );
 
-            }).then(response => {
-                console.log(response);
-                console.log(response.arrayBuffer());
             })
             .catch(error => {
                 console.error(error);
@@ -155,45 +167,50 @@ javascript: !(function () {
     }
 
     window._A_A_A_A_ = true;
+
     var _Audio_prototype_play = Audio.prototype.play;
-    console.log(Audio.prototype.play);
     var _PrevAudio = null;
     var div = document.createElement('div');
     var down = document.createElement('div');
     var style = document.createElement("style");
-    console.log(style);
+
+
     style.innerText = "area:hover {text-decoration-line: underline;}";
+
     down.innerText = 'Save to Ydisk';
     down.id = 'down';
     down.style = 'border: 1px solid;height: 19px;';
+
     div.style =
-        'position:fixed;left:0;bottom:0;right:auto;bottom:auto;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
+        'position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:2000000000;border:1px solid black;background:#FAFAFA;color:black';
+
     var a = document.createElement('area');
     a.appendChild(document.createTextNode('?'));
     a.style =
-        'display:block;color:inherit;padding:.1em;max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;';
+        'display:block;    font-size: medium;color:inherit;padding: 0.3em 1em;;max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;';
     a.id = "link";
 
+
+    
+    var input = document.createElement('input');
+
+    input.style = "height:38px;font-size: medium;padding-left: 0.2em;    text-overflow: ellipsis;";
+   
+    
     div.appendChild(a);
     div.appendChild(style);
-    var audioPlacement = document.createElement('div');
-    div.appendChild(audioPlacement);
-    var input = document.createElement('input');
+    div.appendChild(input);
+    
 
     input.onfocus = function () {
         input.select();
         try {
             var successful = document.execCommand('copy');
         } catch (err) {
-            console.log('Oops, unable to copy');
+            console.error('Oops, unable to copy');
         }
     };
 
-    var radio = document.createElement('input');
-    radio.type = "radio";
-    div.appendChild(radio);
-    div.appendChild(input);
-    div.appendChild(down);
     Audio.prototype.play = function () {
         document.body.appendChild(div);
         if (_PrevAudio && _PrevAudio.parentNode) {
@@ -201,16 +218,8 @@ javascript: !(function () {
         }
         _PrevAudio = this;
         console.log(_PrevAudio);
-        audioPlacement.appendChild(_PrevAudio);
-        _PrevAudio.setAttribute('style', 'display:block!important');
-        _PrevAudio.setAttribute('controls', 'controls');
-        a.style.width = _PrevAudio.clientWidth + 'px';
-        input.style.width = _PrevAudio.clientWidth + 'px';
-        input.style.background = '#fafafa';
+        
 
-        a.firstChild.data = "";
-
-        input.value = '';
         document.getElementById('link').onclick = function (d) {
             console.log(vk_m_url);
             download(vk_m_url, _PrevAudio.download);
@@ -220,39 +229,12 @@ javascript: !(function () {
 
         return _Audio_prototype_play.apply(this, arguments);
     };
-    var getText = function (el, txt) {
-        txt = txt || [];
-        for (var i = 0; i < el.childNodes.length; i++) {
-            switch (el.childNodes[i].nodeType) {
-                case Node.ELEMENT_NODE:
-                    getText(el.childNodes[i], txt);
-                    break;
-                case Node.TEXT_NODE:
-                    txt.push(el.childNodes[i].data);
-                    break;
-            }
-        }
-        return txt.join('');
-    };
-    var getTitleFromElements = function (artistSelector, titleSelector) {
-        var p = document.querySelector(artistSelector);
-        if (p) {
-            p = getText(p)
-                .replace(/^\s*[-–]\s*|\s*[-–]\s*$/g, '')
-                .trim();
-        }
-        var t = document.querySelector(titleSelector);
-        if (t) {
-            t = getText(t)
-                .replace(/^\s*[-–]\s*|\s*[-–]\s*$/g, '')
-                .trim();
-        }
-        return (p ? p : 'Unknown Artist') + ' - ' + (t ? t : 'Unknown Song');
-    };
-    var getTitle = function () {
 
-        vk_m_url = s(getAudioPlayer()._currentAudio[2]).replace('/index.m3u8', '.mp3');
-        console.log(getAudioPlayer());
+   
+    var getTitle = function () {
+        let p = getAudioPlayer();
+        vk_m_url = s(p._currentAudio[2]).replace('/index.m3u8', '.mp3');
+        console.log(p);
         console.log(vk_m_url);
         vk_m_url = vk_m_url.split('/');
         if (vk_m_url.length == 8) {
@@ -268,40 +250,12 @@ javascript: !(function () {
         console.log(vk_m_url);
         console.log(window.id);
         console.log(id);
-        var title = 'Unknown Artist - Unknown Song';
-        if (/(\.|^)yandex\.ru$/.test(document.location.host)) {
-            title = getTitleFromElements(
-                '.player-controls__track-container .track__artists',
-                '.player-controls__track-container .track__title',
-            );
-        } else if (/(\.|^)vk\.com$/.test(document.location.host)) {
-            title = getTitleFromElements('.audio_page_player_title_performer', '.audio_page_player_title_song');
-        } else if (/(\.|^)ok\.ru$/.test(document.location.host)) {
-            title = getTitleFromElements('.mus_player_artist', '.mus_player_song');
-        } else if (/(\.|^)zvooq\.com$/.test(document.location.host)) {
-            title = getTitleFromElements('.topPanelTimeline-intitleArtist', '.topPanelTimeline-intitleRelease');
-        } else if (/(\.|^)karaoke\.ru$/.test(document.location.host)) {
-            title = getTitleFromElements(
-                '.player-karaoke-ru-copyrights-artists, .select-song .player-song-authors',
-                '.player-karaoke-ru-copyrights-title, .select-song .player-song-title',
-            );
-            title += ' (караоке)';
-        } else if (/(\.|^)itunes\.apple\.com$/.test(document.location.host)) {
-            title = getTitleFromElements(
-                '.is-now-playing .bordered-list__subtitle, .product-hero-gutter .t-hero-headline',
-                '.is-now-playing .bordered-list__title, .product-hero-gutter .is-active .table__row__name',
-            );
-        }
+        var title = p._currentAudio[3] +" " +p._currentAudio[3];
+        
 
 
         input.value = '+p ' + title;
-        if (radio.checked) {
-            try {
-                var successful = document.execCommand('copy');
-            } catch (err) {
-                console.log('Oops, unable to copy');
-            }
-        }
+        
         _PrevAudio.download = a.download = title + '.mp3';
     };
 })();
