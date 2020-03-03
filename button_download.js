@@ -33,7 +33,7 @@ function vk_get(t) {
     }).then(e => {
         console.log([e, vk_pl(e[2])]);
 
-        download(vk_pl(e[2]), e[4] + " - " + e[3]);
+        download(vk_pl(e[2]), e[4] + " - " + e[3] + ".mp3");
     });
 }
 function vk_pl(u) {
