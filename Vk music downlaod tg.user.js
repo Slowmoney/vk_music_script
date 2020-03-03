@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name Vk music downlaod
+// @name Vk music downlaod tg
 // @namespace Slowmoney
 // @version     0.0
 // @include     http://*
@@ -279,14 +279,14 @@
 
   down.innerText = 'PUT to TG';
   down.id = 'down';
-  down.style = "color: rgb(200, 214, 229);border: none;box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px;background-color: rgb(74, 118, 168);height: 38px;font-size: medium;padding-left: 0.2em;text-overflow: ellipsis;";
+  down.style = "color: rgb(200, 214, 229);border: none;background-color: rgb(74, 118, 168);height: 38px;font-size: medium;padding-left: 0.2em;text-overflow: ellipsis;cursor:copy;";
   var input = document.createElement('input');
 
   input.style = "height:38px;font-size: medium;padding-left: 0.2em;    text-overflow: ellipsis;";
   div.style =
-      `position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:200;border:1px solid white;padding: 12px;background:#4A76A8;
+      `position:fixed;left:0;bottom:0;right:auto;height: 80px;bottom:0;z-index:2000000;border:1px solid white;padding: 12px;background:#4A76A8;
   color:#C8D6E5;margin-left:50px;margin-bottom:25px;
-  display: flex;
+  display: flex;cursor:copy;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -297,14 +297,13 @@
   a.style =
       `display:block;font-size: medium;color:inherit;padding: 0.3em 1em;
   max-height:1.2em;line-height:1.2em;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:copy;
-  border: none;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);`;
+  border: none;`;
   a.id = "link";
   var input = document.createElement("input");
   input.style =
       `color: #C8D6E5;
   border: none;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  cursor: copy;
   background-color: #4A76A8;
   height: 38px;
   font-size: medium;
@@ -312,7 +311,7 @@
   text-overflow: ellipsis;`;
 
   div.appendChild(a);
-  div.appendChild(style);
+  window.document.getElementsByTagName('head')[0].appendChild(style);
   div.appendChild(input);
   div.appendChild(down);
   input.onfocus = function () {
@@ -323,6 +322,14 @@
           console.error('Oops, unable to copy');
       }
   };
+  var bt = document.createElement("button"); 
+let d = document.createElement("div");
+d.className = "top_audio_player_btn_icon";
+bt.className = "top_audio_player_btn top_audio_player_play _top_audio_player_play";
+d.style = "background-image: url(\"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjIzLjEsMzQuMSA1MS41LDYxLjcgODAsMzQuMSA4MS41LDM1IDUxLjUsNjQuMSAyMS41LDM1IDIzLjEsMzQuMSAiLz48L3N2Zz4=\");";
+bt.prepend(d);
+document.getElementById("top_audio_player").prepend(bt);
+
   Audio.prototype.play = function () {
       document.body.appendChild(div);
       if (_PrevAudio && _PrevAudio.parentNode) {
@@ -338,6 +345,7 @@
           console.log(vk_m_url);
           put_tg(vk_m_url, _PrevAudio.download);
       };
+      bt.onclick = function(e){download(vk_m_url, _PrevAudio.download);}
       setTimeout(getTitle, 100);
       return _Audio_prototype_play.apply(this, arguments);
   };
