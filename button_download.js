@@ -1,14 +1,10 @@
-
-var mutationObserver = new MutationObserver(function (mutations) {
+new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
-        if (mutation.addedNodes.length == 1 && mutation.addedNodes[0].tagName == "DIV") {
-            mutation.addedNodes[0].innerHTML = "<button onclick=\"vk_get(this);return cancelEvent(event);\" class=\"audio_row__action audio_row__action_recoms _audio_row__action_recoms\"></button>" + mutation.addedNodes[0].innerHTML;
-
-
+        if (mutation.type == "childList" && mutation.addedNodes.length == 1 && mutation.addedNodes[0].className == "_audio_row__actions audio_row__actions") {
+            mutation.addedNodes[0].innerHTML = "<button style=\" background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjIzLjEsMzQuMSA1MS41LDYxLjcgODAsMzQuMSA4MS41LDM1IDUxLjUsNjQuMSAyMS41LDM1IDIzLjEsMzQuMSAiLz48L3N2Zz4=);\" onclick=\"vk_get(this.parentNode.parentNode.parentNode);return cancelEvent(event);\" class=\"audio_row__action\"></button>" + mutation.addedNodes[0].innerHTML;
         }
     });
-});
-mutationObserver.observe(document.querySelectorAll(".audio_page__audio_rows_list")[0], {
+}).observe(document.querySelector("body"), {
     attributes: true,
     characterData: true,
     childList: true,
@@ -17,7 +13,7 @@ mutationObserver.observe(document.querySelectorAll(".audio_page__audio_rows_list
     characterDataOldValue: false
 });
 function vk_get(t) {
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
         try {
             var a = AudioUtils.getAudioFromEl(t, !0);
             ajax.post('al_audio.php',
@@ -25,15 +21,15 @@ function vk_get(t) {
                     act: 'reload_audio', ids: a.fullId + '_' + a.actionHash + '_' + a.urlHash
                 },
                 {
-                    onDone: (i, a, l, r) => {
+                    onDone: (i) => {
                         resolve(i[0]);
                     }
                 });
         } catch (err) { }
     }).then(e => {
-        console.log([e, vk_pl(e[2])]);
+        console.log([e, vk_pl(e[2]),t]);
 
-        download(vk_pl(e[2]), e[4] + " - " + e[3] + ".mp3");
+        download(vk_pl(e[2]), e[4] + " - " + e[3] + ".mp3",t);
     });
 }
 function vk_pl(u) {
@@ -48,10 +44,11 @@ function vk_pl(u) {
     return rs.join('/');
 
 }
-async function download(url, filename) {
-
-
-    let response = fetch(url)
+async function download(url, filename,t) {
+    var div = document.createElement("div");
+    div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height: "+t.offsetHeight+"px;";
+    t.parentElement.prepend(div);
+    fetch(url)
         .then(response => {
             let rer = new Response([response]);
             console.log(rer);
@@ -91,7 +88,7 @@ async function download(url, filename) {
 
                             loaded += value.byteLength;
                             console.warn((loaded / total) * 100);
-
+                            div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: "+t.offsetHeight+"px;";
                             read();
                         })
                             .catch(error => {
