@@ -42,10 +42,8 @@
     if (w.self != w.top) {
         return;
     }
-
     new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
-
             if (mutation.type == "childList" && mutation.addedNodes.length == 1 && mutation.addedNodes[0].className == "ap_layer") {
                 var div = document.createElement("div");
                 div.onclick = function () { return vk_playlist_download(this); };
@@ -53,7 +51,6 @@
                 let el = mutation.addedNodes[0].children[0].lastElementChild.firstElementChild.children[0].children[2].children[2].lastElementChild.lastElementChild;
                 div.innerHTML = "Скачать";
                 el.prepend(div);
-
             }
             if (mutation.type == "childList" && mutation.addedNodes.length == 1 && mutation.addedNodes[0].className == "_audio_row__actions audio_row__actions") {
                 var button = document.createElement("button");
@@ -76,81 +73,36 @@
         attributeOldValue: false,
         characterDataOldValue: false
     });
-
     function vk_playlist_download(t) {
-
         let row = t.parentElement.offsetParent.offsetParent.nextElementSibling.children[2].children;
         let playlist_id = row[0].offsetParent.querySelector("._audio_pl").dataset.playlistId.split("_");
-        vk_get_playlist(playlist_id);
-
-
-    }
-    function vk_get_playlist(t) {
-        new Promise((resolve) => {
-            try {
-
-                ajax.post('al_audio.php?act=load_section',
-                    {
-                        act: 'load_section',
-                        owner_id: t[1],
-                        playlist_id: t[2],
-                        type: t[0],
-                        is_loading_all: 1
-                    },
-                    {
-                        onDone: (i) => {
-                            resolve(i);
-                        }
-                    });
-            } catch (err) { }
-        }).then(e => {
-
-            console.log(e);
-            if(!e){
-                
-            }else{
-               try {
-                
-
-                
-                vk_url_playlist_get(e.list);
-            } catch (error) {
-                console.log(error);
-            } 
+        
+        getAudioPlayer()._playlists.forEach((t) => {
+            if (t._type == playlist_id[0] && t._ownerId == playlist_id[1] && t._albumId == playlist_id[2]) {
+                vk_url_array_playlist_get(t._list,row);
             }
-            
         });
+
     }
-    function vk_url_playlist_get(a) {
-        console.log(a.length);
+    function vk_url_array_playlist_get(a,row) {
+      
         var n = 10;
         for (let offset = 0; offset < a.length; offset += n) {
-
             console.log(offset);
-            
             let str = "";
             for (let i = offset; i < offset + n; i++) {
                 console.log(i);
                 try {
-                let hashes = a[i][13].split("/");
-                let fullId = a[i][15].content_id;
-                let actionHash = hashes[2];
-                let urlHash = hashes[5];
-                str += fullId + '_' + actionHash + '_' + urlHash + ',';
-                if (!urlHash) { continue; }
+                    let hashes = a[i][13].split("/");
+                    let fullId = a[i][15].content_id;
+                    let actionHash = hashes[2];
+                    let urlHash = hashes[5];
+                    str += fullId + '_' + actionHash + '_' + urlHash + ',';
+                    if (!urlHash) { continue; }
                 } catch (error) {
-                    
                 }
-
-                
-
-                
             }
-            console.log(str);
-
-
-
-
+            
             new Promise((resolve) => {
                 try {
 
@@ -166,22 +118,18 @@
                 } catch (err) { }
             }).then(e => {
                 console.log(e);
-                
-try {
-    e.forEach((t) => {
-                    download(vk_pl(t[2]), t[4] + " - " + t[3] + ".mp3", t);
-                    
-                });
-} catch (error) {
-    
-}
-                
-
+                try {
+                    e.forEach((t,i) => {
+                        
+                        download(vk_pl(t[2]), t[4] + " - " + t[3] + ".mp3", row[i+offset].children[0].querySelector(".audio_row__inner"));
+                    });
+                } catch (error) {
+                }
             });
         }
     }
     async function put_tg(url, e, t) {
-        console.log(url);
+        
         let div = document.createElement("div");
         div.style = "background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
         t.parentElement.prepend(div);
@@ -189,8 +137,7 @@ try {
             .then(response => {
 
                 let rer = new Response([response]);
-                console.log(rer);
-                console.log(rer.arrayBuffer());
+               
                 if (!response.ok) {
                     throw Error(response.status + ' ' + response.statusText)
                 }
@@ -305,14 +252,14 @@ try {
     }
     async function download(url, filename, t) {
         var div = document.createElement("div");
-try {
-   div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
-        t.parentElement.prepend(div);
-  
-} catch (error) {
-    
-}
-       
+        try {
+            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
+            t.parentElement.prepend(div);
+
+        } catch (error) {
+
+        }
+
         fetch(url)
             .then(response => {
                 let rer = new Response([response]);
@@ -341,7 +288,7 @@ try {
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     controller.close();
-                                    var b = new Blob([buffer], { type: "audio/mp3" }); 
+                                    var b = new Blob([buffer], { type: "audio/mp3" });
                                     var a = document.createElement("a");
                                     a.href = URL.createObjectURL(b);
                                     a.setAttribute("download", filename);
@@ -352,13 +299,13 @@ try {
                                 buffer.set(value, loaded);
 
                                 loaded += value.byteLength;
-                                
+
                                 try {
-                                     div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: " + t.offsetHeight + "px;";
+                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: " + t.offsetHeight + "px;";
                                 } catch (error) {
-                                    
+
                                 }
-                               
+
                                 read();
                             })
                                 .catch(error => {
