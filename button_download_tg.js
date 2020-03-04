@@ -253,7 +253,7 @@
     async function download(url, filename, t) {
         var div = document.createElement("div");
         try {
-            div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
+            div.style = "background-color: #f443364d;width: 100%;box-shadow: 0px 0px 2px 0px #797979;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
             t.parentElement.prepend(div);
 
         } catch (error) {
@@ -301,7 +301,7 @@
                                 loaded += value.byteLength;
 
                                 try {
-                                    div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: " + t.offsetHeight + "px;";
+                                    div.style = "background-color: #c3d0dd;box-shadow: 0px 0px 2px 0px #797979; border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: " + t.offsetHeight + "px;";
                                 } catch (error) {
 
                                 }
