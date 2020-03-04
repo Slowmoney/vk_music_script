@@ -78,15 +78,107 @@
     });
 
     function vk_playlist_download(t) {
-        let array = [];
-        let row = t.parentElement.offsetParent.offsetParent.nextElementSibling.children[2].children
-            .forEach(
-                function (e) {
-                    array.push(JSON.parse(e.dataset.audio));
-                    vk_get(e.children[0].querySelector(".audio_row__inner"));
 
+        let row = t.parentElement.offsetParent.offsetParent.nextElementSibling.children[2].children;
+        let playlist_id = row[0].offsetParent.querySelector("._audio_pl").dataset.playlistId.split("_");
+        vk_get_playlist(playlist_id);
+
+
+    }
+    function vk_get_playlist(t) {
+        new Promise((resolve) => {
+            try {
+
+                ajax.post('al_audio.php?act=load_section',
+                    {
+                        act: 'load_section',
+                        owner_id: t[1],
+                        playlist_id: t[2],
+                        type: t[0],
+                        is_loading_all: 1
+                    },
+                    {
+                        onDone: (i) => {
+                            resolve(i);
+                        }
+                    });
+            } catch (err) { }
+        }).then(e => {
+
+            console.log(e);
+            if(!e){
+                
+            }else{
+               try {
+                
+
+                
+                vk_url_playlist_get(e.list);
+            } catch (error) {
+                console.log(error);
+            } 
+            }
+            
+        });
+    }
+    function vk_url_playlist_get(a) {
+        console.log(a.length);
+        var n = 10;
+        for (let offset = 0; offset < a.length; offset += n) {
+
+            console.log(offset);
+            
+            let str = "";
+            for (let i = offset; i < offset + n; i++) {
+                console.log(i);
+                try {
+                let hashes = a[i][13].split("/");
+                let fullId = a[i][15].content_id;
+                let actionHash = hashes[2];
+                let urlHash = hashes[5];
+                str += fullId + '_' + actionHash + '_' + urlHash + ',';
+                if (!urlHash) { continue; }
+                } catch (error) {
+                    
+                }
+
+                
+
+                
+            }
+            console.log(str);
+
+
+
+
+            new Promise((resolve) => {
+                try {
+
+                    ajax.post('al_audio.php',
+                        {
+                            act: 'reload_audio', ids: str.slice(0, -1)
+                        },
+                        {
+                            onDone: (i) => {
+                                resolve(i);
+                            }
+                        });
+                } catch (err) { }
+            }).then(e => {
+                console.log(e);
+                
+try {
+    e.forEach((t) => {
+                    download(vk_pl(t[2]), t[4] + " - " + t[3] + ".mp3", t);
+                    
                 });
-        console.log(array);
+} catch (error) {
+    
+}
+                
+
+            });
+        }
     }
     async function put_tg(url, e, t) {
         console.log(url);
@@ -213,8 +305,14 @@
     }
     async function download(url, filename, t) {
         var div = document.createElement("div");
-        div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
+try {
+   div.style = "background-color: #f443364d;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
         t.parentElement.prepend(div);
+  
+} catch (error) {
+    
+}
+       
         fetch(url)
             .then(response => {
                 let rer = new Response([response]);
@@ -243,7 +341,7 @@
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     controller.close();
-                                    var b = new Blob([buffer], { type: "audio/mp3" }); console.log(b.size);
+                                    var b = new Blob([buffer], { type: "audio/mp3" }); 
                                     var a = document.createElement("a");
                                     a.href = URL.createObjectURL(b);
                                     a.setAttribute("download", filename);
@@ -254,8 +352,13 @@
                                 buffer.set(value, loaded);
 
                                 loaded += value.byteLength;
-                                console.warn((loaded / total) * 100);
-                                div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: " + t.offsetHeight + "px;";
+                                
+                                try {
+                                     div.style = "background-color: #c3d0dd;    border-radius: 4px;position: absolute;width:" + (loaded / total) * 100 + "%;height: " + t.offsetHeight + "px;";
+                                } catch (error) {
+                                    
+                                }
+                               
                                 read();
                             })
                                 .catch(error => {
