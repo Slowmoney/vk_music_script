@@ -55,11 +55,34 @@
             if (mutation.type == "childList" && mutation.addedNodes.length == 1 && mutation.addedNodes[0].className == "_audio_row__actions audio_row__actions") {
                 var button = document.createElement("button");
                 button.onclick = function () { vk_get(this.parentNode.parentNode.parentNode); return cancelEvent(event); };
+                button.onmouseover = function () {
+                    var u = {
+                        text: () => "Скачать",
+                        black: 1,
+                        shift: [7, 4, 0],
+                        needLeft: !0,
+                        forcetodown: undefined,
+                        noZIndex: !0,
+                    };
+                    showTooltip(this, u);
+                };
                 button.className = "audio_row__action";
                 button.style = "background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjIzLjEsMzQuMSA1MS41LDYxLjcgODAsMzQuMSA4MS41LDM1IDUxLjUsNjQuMSAyMS41LDM1IDIzLjEsMzQuMSAiLz48L3N2Zz4=);"
                 mutation.addedNodes[0].prepend(button);
+
                 var button_tg = document.createElement("button");
                 button_tg.onclick = function () { vk_to_tg(this.parentNode.parentNode.parentNode); return cancelEvent(event); };
+                button_tg.onmouseover = function () {
+                    var u = {
+                        text: () => "Отправить в канал",
+                        black: 1,
+                        shift: [7, 4, 0],
+                        needLeft: !0,
+                        forcetodown: undefined,
+                        noZIndex: !0,
+                    };
+                    showTooltip(this, u);
+                };
                 button_tg.className = "audio_row__action";
                 button_tg.style = "background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxLjQxNDIxOyI+PHBhdGggaWQ9InRlbGVncmFtLTEiIGQ9Ik0xOC4zODQsMjIuNzc5YzAuMzIyLDAuMjI4IDAuNzM3LDAuMjg1IDEuMTA3LDAuMTQ1YzAuMzcsLTAuMTQxIDAuNjQyLC0wLjQ1NyAwLjcyNCwtMC44NGMwLjg2OSwtNC4wODQgMi45NzcsLTE0LjQyMSAzLjc2OCwtMTguMTM2YzAuMDYsLTAuMjggLTAuMDQsLTAuNTcxIC0wLjI2LC0wLjc1OGMtMC4yMiwtMC4xODcgLTAuNTI1LC0wLjI0MSAtMC43OTcsLTAuMTRjLTQuMTkzLDEuNTUyIC0xNy4xMDYsNi4zOTcgLTIyLjM4NCw4LjM1Yy0wLjMzNSwwLjEyNCAtMC41NTMsMC40NDYgLTAuNTQyLDAuNzk5YzAuMDEyLDAuMzU0IDAuMjUsMC42NjEgMC41OTMsMC43NjRjMi4zNjcsMC43MDggNS40NzQsMS42OTMgNS40NzQsMS42OTNjMCwwIDEuNDUyLDQuMzg1IDIuMjA5LDYuNjE1YzAuMDk1LDAuMjggMC4zMTQsMC41IDAuNjAzLDAuNTc2YzAuMjg4LDAuMDc1IDAuNTk2LC0wLjAwNCAwLjgxMSwtMC4yMDdjMS4yMTYsLTEuMTQ4IDMuMDk2LC0yLjkyMyAzLjA5NiwtMi45MjNjMCwwIDMuNTcyLDIuNjE5IDUuNTk4LDQuMDYyWm0tMTEuMDEsLTguNjc3bDEuNjc5LDUuNTM4bDAuMzczLC0zLjUwN2MwLDAgNi40ODcsLTUuODUxIDEwLjE4NSwtOS4xODZjMC4xMDgsLTAuMDk4IDAuMTIzLC0wLjI2MiAwLjAzMywtMC4zNzdjLTAuMDg5LC0wLjExNSAtMC4yNTMsLTAuMTQyIC0wLjM3NiwtMC4wNjRjLTQuMjg2LDIuNzM3IC0xMS44OTQsNy41OTYgLTExLjg5NCw3LjU5NloiLz48L3N2Zz4=);"
                 mutation.addedNodes[0].prepend(button_tg);
@@ -76,22 +99,22 @@
     function vk_playlist_download(t) {
         let row = t.parentElement.offsetParent.offsetParent.nextElementSibling.children[2].children;
         let playlist_id = row[0].offsetParent.querySelector("._audio_pl").dataset.playlistId.split("_");
-        
+
         getAudioPlayer()._playlists.forEach((t) => {
             if (t._type == playlist_id[0] && t._ownerId == playlist_id[1] && t._albumId == playlist_id[2]) {
-                vk_url_array_playlist_get(t._list,row);
+                vk_url_array_playlist_get(t._list, row);
             }
         });
 
     }
-    function vk_url_array_playlist_get(a,row) {
-      
+    function vk_url_array_playlist_get(a, row) {
+
         var n = 10;
         for (let offset = 0; offset < a.length; offset += n) {
-            console.log(offset);
+            
             let str = "";
             for (let i = offset; i < offset + n; i++) {
-                console.log(i);
+               
                 try {
                     let hashes = a[i][13].split("/");
                     let fullId = a[i][15].content_id;
@@ -102,7 +125,7 @@
                 } catch (error) {
                 }
             }
-            
+
             new Promise((resolve) => {
                 try {
 
@@ -117,11 +140,11 @@
                         });
                 } catch (err) { }
             }).then(e => {
-                console.log(e);
+               
                 try {
-                    e.forEach((t,i) => {
-                        
-                        download(vk_pl(t[2]), t[4] + " - " + t[3] + ".mp3", row[i+offset].children[0].querySelector(".audio_row__inner"));
+                    e.forEach((t, i) => {
+                        console.log(i);
+                        download(vk_decode_url(t[2]), t[4] + " - " + t[3] + ".mp3", row[i + offset].children[0].querySelector(".audio_row__inner"));
                     });
                 } catch (error) {
                 }
@@ -129,7 +152,7 @@
         }
     }
     async function put_tg(url, e, t) {
-        
+
         let div = document.createElement("div");
         div.style = "background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: " + t.offsetHeight + "px;";
         t.parentElement.prepend(div);
@@ -137,7 +160,7 @@
             .then(response => {
 
                 let rer = new Response([response]);
-               
+
                 if (!response.ok) {
                     throw Error(response.status + ' ' + response.statusText)
                 }
@@ -170,7 +193,7 @@
                                     formData.append("performer", e[4]);
                                     formData.append("title", e[3]);
                                     var request = new XMLHttpRequest();
-                                    request.open("POST", "https://api.telegram.org/bot629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo/sendAudio?chat_id=@detoxification");
+                                    request.open("POST", "");
                                     request.send(formData);
                                     return buffer;
                                 }
@@ -190,8 +213,7 @@
                 );
 
             }).then(response => {
-                console.log(response);
-                console.log(response.arrayBuffer());
+                
             })
             .catch(error => {
                 console.error(error);
@@ -213,9 +235,9 @@
                     });
             } catch (err) { }
         }).then(e => {
-            console.log([e, vk_pl(e[2]), t]);
+            console.log([e, vk_decode_url(e[2]), t]);
 
-            download(vk_pl(e[2]), e[4] + " - " + e[3] + ".mp3", t);
+            download(vk_decode_url(e[2]), e[4] + " - " + e[3] + ".mp3", t);
         });
     }
     function vk_to_tg(t) {
@@ -233,12 +255,12 @@
                     });
             } catch (err) { }
         }).then(e => {
-            console.log([e, vk_pl(e[2]), t]);
 
-            put_tg(vk_pl(e[2]), e, t);
+
+            put_tg(vk_decode_url(e[2]), e, t);
         });
     }
-    function vk_pl(u) {
+    function vk_decode_url(u) {
 
         rs = s(u).replace('/index.m3u8', '.mp3');
         rs = rs.split('/');
@@ -263,8 +285,7 @@
         fetch(url)
             .then(response => {
                 let rer = new Response([response]);
-                console.log(rer);
-                console.log(rer.arrayBuffer());
+                
                 if (!response.ok) {
                     throw Error(response.status + ' ' + response.statusText)
                 }
@@ -293,7 +314,7 @@
                                     a.href = URL.createObjectURL(b);
                                     a.setAttribute("download", filename);
                                     a.click();
-
+                                    
                                     return buffer;
                                 }
                                 buffer.set(value, loaded);
