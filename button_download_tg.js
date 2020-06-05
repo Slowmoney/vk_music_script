@@ -100,15 +100,16 @@
         let row = t.parentElement.offsetParent.offsetParent.nextElementSibling.children[2].children;
         let playlist_id = row[0].offsetParent.querySelector("._audio_pl").dataset.playlistId.split("_");
 
-        getAudioPlayer()._playlists.forEach((t) => {
+        getAudioPlayer()._playlists.forEach((t,i) => {
             if (t._type == playlist_id[0] && t._ownerId == playlist_id[1] && t._albumId == playlist_id[2]) {
                 vk_url_array_playlist_get(t._list, row);
+                
             }
         });
 
     }
     function vk_url_array_playlist_get(a, row) {
-
+        console.log(a);
         var n = 10;
         for (let offset = 0; offset < a.length; offset += n) {
             
@@ -121,11 +122,11 @@
                     let actionHash = hashes[2];
                     let urlHash = hashes[5];
                     str += fullId + '_' + actionHash + '_' + urlHash + ',';
-                    if (!urlHash) { continue; }
+                    if (!urlHash) {console.log("cont ",urlHash); continue; }
                 } catch (error) {
                 }
-            }
-
+        }
+            console.log(str.slice(0, -1));
             new Promise((resolve) => {
                 try {
 
@@ -142,10 +143,13 @@
             }).then(e => {
                
                 try {
+                   // let l =0;
                     e.forEach((t, i) => {
-                        console.log(i);
+                      //  l=i;
+                        
                         download(vk_decode_url(t[2]), t[4] + " - " + t[3] + ".mp3", row[i + offset].children[0].querySelector(".audio_row__inner"));
                     });
+                    //console.log(l+1);
                 } catch (error) {
                 }
             });
@@ -193,7 +197,7 @@
                                     formData.append("performer", e[4]);
                                     formData.append("title", e[3]);
                                     var request = new XMLHttpRequest();
-                                    request.open("POST", "");
+                                    request.open("POST", "https://api.telegram.org/bot629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo/sendAudio?chat_id=@detoxification");
                                     request.send(formData);
                                     return buffer;
                                 }
