@@ -10,6 +10,20 @@
 Ctrl+D --> Ещё --> В URL поместить код \/
 
 ```
+## button_download_tg.js
+
+Для инсталла:
+1. Meddle monkey или чёт другое
+2. Создаём new script
+3. ctrl+c из button_download_tg.js ctrl+v в new script
+
+## button_download.js
+
+Для установки:
+1. Meddle monkey или чёт другое
+2. Создаём new script
+3. ctrl+c из button_download_tg.js ctrl+v в new script
+
 ## vk_music_download.js
 Первая тесовая версия
 
@@ -18,4 +32,6 @@ Ctrl+D --> Ещё --> В URL поместить код \/
 
 ## vk_music_download_tg.js
 Тож вроде ничего + постер музыки в TG
+
+
 
