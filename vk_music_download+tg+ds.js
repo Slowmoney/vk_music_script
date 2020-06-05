@@ -173,8 +173,9 @@
 			div.innerHTML = TEXT_LOAD;
 			el.prepend(div);
 		}
-	} catch (e) {}
-	function vk_playlist_download(t) {
+    } catch (e) {}
+    
+	function vk_playlist_download() {
 		let row = document.querySelectorAll('.audio_pl_snippet__list');
 		let playlist_id = [];
 		if (row.length == 0) {
@@ -193,8 +194,14 @@
 				vk_url_array_playlist_get(t._list, row);
 			}
 		});
-	}
-	function vk_url_array_playlist_get(a, row) {
+    }
+	/**
+     *
+     *
+     * @param {Array} a
+     * @param {HTMLElement} row
+     */
+    function vk_url_array_playlist_get(a, row) {
 		console.log(a);
 		let n = 10;
 		for (let offset = 0; offset < a.length; offset += n) {
@@ -217,7 +224,7 @@
 				try {
 					ajax.post(
 						URL_AUDIO,
-						{
+					{
 							act: 'reload_audio',
 							ids: str.slice(0, -1),
 						},
@@ -240,8 +247,15 @@
 				} catch (error) {}
 			});
 		}
-	}
-	async function put_tg(url, e, t) {
+    }
+	/**
+     *
+     *
+     * @param {string} url
+     * @param {string} e
+     * @param {HTMLElement} t
+     */
+    async function put_tg(url, e, t) {
 		let div = document.createElement('div');
 		div.style =
 			'background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: ' +
@@ -313,8 +327,14 @@
 			.catch((error) => {
 				console.error(error);
 			});
-	}
-	function vk_get(t) {
+    }
+    
+	/**
+     *
+     *
+     * @param {HTMLElement} t
+     */
+    function vk_get(t) {
 		new Promise((resolve) => {
 			try {
 				let a = AudioUtils.getAudioFromEl(t, !0);
@@ -335,8 +355,14 @@
 			console.log([e, vk_decode_url(e[2]), t]);
 			download(vk_decode_url(e[2]), e[4] + ' - ' + e[3] + '.mp3', t);
 		});
-	}
-	function vk_to_tg(t) {
+    }
+    
+	/**
+     *
+     *
+     * @param {HTMLElement} t
+     */
+    function vk_to_tg(t) {
 		new Promise((resolve) => {
 			try {
 				let a = AudioUtils.getAudioFromEl(t, !0);
@@ -356,8 +382,14 @@
 		}).then((e) => {
 			put_tg(vk_decode_url(e[2]), e, t);
 		});
-	}
-	function vk_decode_url(u) {
+    }
+	/**
+     *
+     *
+     * @param {string} u
+     * @returns
+     */
+    function vk_decode_url(u) {
 		rs = s(u).replace('/index.m3u8', '.mp3');
 		rs = rs.split('/');
 		if (rs.length == 8) {
@@ -365,9 +397,16 @@
 		} else {
 			delete rs[4];
 		}
-		return rs.join('/');
-	}
-	async function download(url, filename, t) {
+        return rs.join('/');
+    }
+	/**
+     *
+     *
+     * @param {string} url
+     * @param {string} filename
+     * @param {HTMLElement} t
+     */
+    async function download(url, filename, t) {
 		let div = document.createElement('div');
 		try {
 			div.style =
