@@ -10,6 +10,23 @@
 Ctrl+D --> Ещё --> В URL поместить код \/
 
 ```
+
+
+```js
+...
+const SETTINGS = {
+		btn: {
+			telegram: true, // кнопка  
+			copy: false,
+			download: true,
+			topdownload: true, 
+		},
+    };
+...
+```
+
+
+
 ## button_download_tg.js
 
 Для инсталла:
