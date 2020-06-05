@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name Vk music downloader tg playlist discord
+// @description:ru Кнопки для скачивания музыки
 // @namespace Slowmoney
-// @version     0.0
+// @version     05.06.2020
 // @include     http://vk.com/*
 // @include     https://vk.com/*
 // @run-at      document-end
@@ -47,8 +48,8 @@
 		},
 	};
 
-	const TELEGRAMBOTTOKEN = '';
-	const TELEGRAMCHANEL = '';
+	const TELEGRAMBOTTOKEN = 'bot629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo';
+	const TELEGRAMCHANEL = '@detoxification';
 	const ICON_LOAD =
 		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjIzLjEsMzQuMSA1MS41LDYxLjcgODAsMzQuMSA4MS41LDM1IDUxLjUsNjQuMSAyMS41LDM1IDIzLjEsMzQuMSAiLz48L3N2Zz4=';
 	const ICON_TELEGRAM =
