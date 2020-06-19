@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name Vk music downloader tg playlist discord
+// @name Vk music downloader
 // @description:ru Кнопки для скачивания музыки
 // @namespace Slowmoney
-// @version     19.06.2020
+// @version     20.06.2020
 // @downloadUrl   https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js
 // @updateUrl     https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.meta.js
 // @match       *://vkontakte.ru/*
