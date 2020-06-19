@@ -32,7 +32,7 @@
 		},
 	};
 
-	const TELEGRAMBOTTOKEN = 'bot629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo';
+	const TELEGRAMBOTTOKEN = '';
 	const TELEGRAMCHANEL = '@detoxification';
 	const ICON_LOAD =
 		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjIzLjEsMzQuMSA1MS41LDYxLjcgODAsMzQuMSA4MS41LDM1IDUxLjUsNjQuMSAyMS41LDM1IDIzLjEsMzQuMSAiLz48L3N2Zz4=';
@@ -95,7 +95,7 @@
 				};
 				button.className = CLASSNAME_BTN_INLINE;
 				button.style = 'background-image: url(' + ICON_LOAD + ');';
-				mutation.addedNodes[0].prepend(button);
+				mutation.addedNodes[0].append(button);
 				// Кнопка Отправить в телеграм канал при навадке на песню
 				if (SETTINGS.btn.telegram) {
 					let button_tg = document.createElement('button');
@@ -173,9 +173,8 @@
 			div.innerHTML = TEXT_LOAD;
 			el.prepend(div);
 		}
-    } catch (e) {}
-    
-	function vk_playlist_download() {
+	} catch (e) {}
+	function vk_playlist_download(t) {
 		let row = document.querySelectorAll('.audio_pl_snippet__list');
 		let playlist_id = [];
 		if (row.length == 0) {
@@ -194,14 +193,8 @@
 				vk_url_array_playlist_get(t._list, row);
 			}
 		});
-    }
-	/**
-     *
-     *
-     * @param {Array} a
-     * @param {HTMLElement} row
-     */
-    function vk_url_array_playlist_get(a, row) {
+	}
+	function vk_url_array_playlist_get(a, row) {
 		console.log(a);
 		let n = 10;
 		for (let offset = 0; offset < a.length; offset += n) {
@@ -224,7 +217,7 @@
 				try {
 					ajax.post(
 						URL_AUDIO,
-					{
+						{
 							act: 'reload_audio',
 							ids: str.slice(0, -1),
 						},
@@ -247,15 +240,8 @@
 				} catch (error) {}
 			});
 		}
-    }
-	/**
-     *
-     *
-     * @param {string} url
-     * @param {string} e
-     * @param {HTMLElement} t
-     */
-    async function put_tg(url, e, t) {
+	}
+	async function put_tg(url, e, t) {
 		let div = document.createElement('div');
 		div.style =
 			'background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: ' +
@@ -327,14 +313,8 @@
 			.catch((error) => {
 				console.error(error);
 			});
-    }
-    
-	/**
-     *
-     *
-     * @param {HTMLElement} t
-     */
-    function vk_get(t) {
+	}
+	function vk_get(t) {
 		new Promise((resolve) => {
 			try {
 				let a = AudioUtils.getAudioFromEl(t, !0);
@@ -355,14 +335,8 @@
 			console.log([e, vk_decode_url(e[2]), t]);
 			download(vk_decode_url(e[2]), e[4] + ' - ' + e[3] + '.mp3', t);
 		});
-    }
-    
-	/**
-     *
-     *
-     * @param {HTMLElement} t
-     */
-    function vk_to_tg(t) {
+	}
+	function vk_to_tg(t) {
 		new Promise((resolve) => {
 			try {
 				let a = AudioUtils.getAudioFromEl(t, !0);
@@ -382,14 +356,8 @@
 		}).then((e) => {
 			put_tg(vk_decode_url(e[2]), e, t);
 		});
-    }
-	/**
-     *
-     *
-     * @param {string} u
-     * @returns
-     */
-    function vk_decode_url(u) {
+	}
+	function vk_decode_url(u) {
 		rs = s(u).replace('/index.m3u8', '.mp3');
 		rs = rs.split('/');
 		if (rs.length == 8) {
@@ -397,16 +365,9 @@
 		} else {
 			delete rs[4];
 		}
-        return rs.join('/');
-    }
-	/**
-     *
-     *
-     * @param {string} url
-     * @param {string} filename
-     * @param {HTMLElement} t
-     */
-    async function download(url, filename, t) {
+		return rs.join('/');
+	}
+	async function download(url, filename, t) {
 		let div = document.createElement('div');
 		try {
 			div.style =
