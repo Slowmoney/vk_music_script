@@ -15,14 +15,14 @@
 // @match       *://*.vk.me/*
 // @match       *://*.vkuseraudio.net/*
 // @match       *://*.vkuservideo.net/*
-// @connect     self
+
 // @connect     vkontakte.ru
 // @connect     vk.com
 // @connect     userapi.com
 // @connect     vk.me
 // @connect     vkuseraudio.net
 // @connect     vkuservideo.net
-// @run-at       document-start
+// @run-at       document-end
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // @grant        GM_download
