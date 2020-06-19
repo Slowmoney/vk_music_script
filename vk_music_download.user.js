@@ -15,7 +15,6 @@
 // @match       *://*.vk.me/*
 // @match       *://*.vkuseraudio.net/*
 // @match       *://*.vkuservideo.net/*
-
 // @connect     vkontakte.ru
 // @connect     vk.com
 // @connect     userapi.com
