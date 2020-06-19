@@ -1,25 +1,27 @@
-# vk_music_script
-Штука для Download музыки из Vk.com
+# Основные возможности
+Штука для Download музыки из vk.com
+И так же можно скачивать челые альбомы
+Можно постить музыку в TG прям из вк
 
 ## Установка
 
 Для Хрома
 
-```chrome
+##### Установка:
+1. Meddle monkey или чёт другое
+2. Создаём new script
+3. ctrl+c из button_download+tg+вы.js ctrl+v в new script
 
-Ctrl+D --> Ещё --> В URL поместить код \/
-
-```
-
+## Настройки
 
 ```js
 ...
 const SETTINGS = {
 		btn: {
-			telegram: true, // кнопка  
-			copy: false,
-			download: true,
-			topdownload: true, 
+			telegram: true, // кнопка постера в TG  
+			copy: false, //DEV!!! кнопка копирования название
+			download: true, // кнопка загрузки в строке с песней
+			topdownload: true, // кнопка загрузки полного альбома
 		},
     };
 ...
@@ -27,28 +29,5 @@ const SETTINGS = {
 
 
 
-## button_download_tg.js
-
-Для инсталла:
-1. Meddle monkey или чёт другое
-2. Создаём new script
-3. ctrl+c из button_download_tg.js ctrl+v в new script
-
-## button_download.js
-
-Для установки:
-1. Meddle monkey или чёт другое
-2. Создаём new script
-3. ctrl+c из button_download_tg.js ctrl+v в new script
-
-## vk_music_download.js
-Первая тесовая версия
-
-## vk_music_downloadv2.js
-Абсолютно рабочая абсолютно нормальная версия
-
-## vk_music_download_tg.js
-Тож вроде ничего + постер музыки в TG
-
-
-
+### roadmap
+1. сделать копирование название по кнопке с префиксами для ботов в дискорде 
