@@ -1,3 +1,4 @@
+# [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js)
 # Основные возможности
 Штука для Download музыки из vk.com
 И так же можно скачивать челые альбомы
@@ -8,6 +9,9 @@
 Для Хрома
 
 ##### Установка:
+
+
+
 1. Meddle monkey или чёт другое
 2. Создаём new script
 3. ctrl+c из button_download+tg+вы.js ctrl+v в new script
