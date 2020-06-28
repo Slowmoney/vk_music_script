@@ -49,7 +49,7 @@
 		},
 	};
 
-	const TELEGRAMBOTTOKEN = '';
+	const TELEGRAMBOTTOKEN = '629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo';
 	const TELEGRAMCHANEL = '@detoxification';
 	const ICON_LOAD =
 		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjIzLjEsMzQuMSA1MS41LDYxLjcgODAsMzQuMSA4MS41LDM1IDUxLjUsNjQuMSAyMS41LDM1IDIzLjEsMzQuMSAiLz48L3N2Zz4=';
@@ -68,6 +68,7 @@
 	const URL_AUDIO = 'al_audio.php';
 
 	//Script Start
+	//button 
 	new MutationObserver(function (mutations) {
 		mutations.forEach(function (mutation) {
 			if (
@@ -192,8 +193,8 @@
 			el.prepend(btn_dwnl);
 		}
 	} catch (e) { }
-
-	function vk_playlist_download(t) {
+	//end button
+	function vk_playlist_download() {
 		let row = document.querySelectorAll('.audio_pl_snippet__list');
 		let playlist_id = [];
 		if (row.length == 0) {
@@ -213,65 +214,46 @@
 			}
 		});
 	}
+	function hashList(a, offset) {
+		let str = '';
+		for (let i = offset; i < offset + 10; i++) {
+			try {
+				let hashes = a[i][13].split('/');
+				let fullId = a[i][15].content_id;
+				let actionHash = hashes[2];
+				let urlHash = hashes[5];
+				str += fullId + '_' + actionHash + '_' + urlHash + ',';
+				if (!urlHash) {
+					console.log('cont ', urlHash);
+					continue;
+				}
+			} catch (error) { }
+		}
+		return str;
+	}
 	function vk_url_array_playlist_get(playlistData, row) {
 		let a = playlistData._list;
 		console.log(a);
-		let n = 10;
-		for (let offset = 0; offset < a.length; offset += n) {
-			let str = '';
-			for (let i = offset; i < offset + n; i++) {
-				try {
-					let hashes = a[i][13].split('/');
-					let fullId = a[i][15].content_id;
-					let actionHash = hashes[2];
-					let urlHash = hashes[5];
-					str += fullId + '_' + actionHash + '_' + urlHash + ',';
-					if (!urlHash) {
-						console.log('cont ', urlHash);
-						continue;
-					}
-				} catch (error) { }
-			}
-			console.log(str.slice(0, -1));
-			new Promise((resolve, reject) => {
-				try {
-					ajax.post(
-						URL_AUDIO,
-						{
-							act: 'reload_audio',
-							ids: str.slice(0, -1),
-						},
-						{
-							onDone: (i) => {
-								resolve(i);
-							},
-						}
-					);
-				} catch (err) { reject(err) }
-			}).then(async (e) => {
+
+		for (let offset = 0; offset < a.length; offset += 10) {
+			let str = hashList(a, offset).slice(0, -1);
+			console.log(str);
+			reload_audio(0, str).then(async (e) => {
 				let coverData = playlistData._coverUrl;
-
-				if (playlistData._coverUrl) {
-					let res = await fetch(playlistData._coverUrl)
-					coverData = await res.arrayBuffer()
+				if (playlistData._coverUrl && !playlistData._isOfficial) {
+					coverData = getCover(coverData)
 				}
-
-
-
 				try {
 					e.forEach((t, i) => {
-                        /*  if (!playlistData._isOfficial) {
-                             let t = e[14].split(",")
-                             coverData = t[t.length-1];
- 
-                             
-                         } */
+						if (!playlistData._isOfficial) {
+							let c = t[14].split(",")
+							coverData = c[c.length - 1];
+						}
 						let artist = t[4].replace(/(&.+;)/ig, "")
 						let title = t[3].replace(/(&.+;)/ig, "")
 						let album = playlistData._title
 						download(
 							vk_decode_url(t[2]),
-							artist + ' - ' + title + '.mp3',
 							row[i + offset].children[0].querySelector('.audio_row__inner'),
 							{ album: album, artist: artist, title: title, cover: { data: coverData, description: "front" } }
 						);
@@ -280,7 +262,7 @@
 			});
 		}
 	}
-	async function put_tg(url = "", e, t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
+	async function telegram(url = "", e, t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
 		let div = document.createElement('div');
 		div.style =
 			'background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: ' +
@@ -306,71 +288,33 @@
 				return new Response(
 					new ReadableStream({
 						start(controller) {
-							const reader = response.body.getReader();
-							read();
-							async function read() {
-								reader
-									.read()
-									.then(async ({ done, value }) => {
-										if (done) {
-											controller.close();
-											const writer = new ID3Writer(buffer);
-											if (tags.title) {
-												writer.setFrame('TIT2', tags.title)
-											}
-											if (tags.artist) {
-												writer.setFrame('TPE1', [tags.artist])
-											}
-											if (tags.album) {
-												writer.setFrame('TALB', tags.album);
-											}
-											if (tags.cover.data && tags.cover.description) {
-												let coverBuffer = tags.cover.data;
-												if (typeof (tags.cover.data) == "string") {
-													let res = await fetch(tags.cover.data)
-													coverBuffer = await res.arrayBuffer()
-												}
-												writer.setFrame('APIC', {
-													type: 3,
-													data: coverBuffer,
-													description: tags.cover.description
-												})
-											}
-											writer.addTag();
-											let b = new Blob([writer.arrayBuffer]);
-
-											let formData = new FormData();
-											let blob = new Blob([b], { type: 'audio/mp3' });
-											formData.append('audio', blob, e[4] + ' - ' + e[3] + '.mp3');
-											formData.append('performer', e[4]);
-											formData.append('title', e[3]);
-											let request = new XMLHttpRequest();
-											request.open(
-												'POST',
-												'https://api.telegram.org/bot' +
-												TELEGRAMBOTTOKEN +
-												'/sendAudio?chat_id=' +
-												TELEGRAMCHANEL
-											);
-											request.send(formData);
-
-											return buffer;
-										}
-										buffer.set(value, loaded);
-										loaded += value.byteLength;
-										div.style =
-											'background-color: #a6c7e8;    border-radius: 4px;position: absolute;width:' +
-											(loaded / total) * 100 +
-											'%;height: ' +
-											t.offsetHeight +
-											'px;';
-										read();
-									})
-									.catch((error) => {
-										console.error(error);
-										controller.error(error);
-									});
-							}
+							readMusic(response.body.getReader(), loaded, total, buffer, controller, div, t, async (ret) => {
+								const writer = new ID3Writer(ret);
+								tags.title && writer.setFrame('TIT2', tags.title)
+								tags.artist && writer.setFrame('TPE1', [tags.artist])
+								tags.album && writer.setFrame('TALB', tags.album);
+								tags.cover.data && tags.cover.description && writer.setFrame('APIC', {
+									type: 3,
+									data: await getCover(tags.cover.data),
+									description: tags.cover.description
+								})
+								writer.addTag();
+								let b = new Blob([writer.arrayBuffer]);
+								let formData = new FormData();
+								let blob = new Blob([b], { type: 'audio/mp3' });
+								formData.append('audio', blob, e[4] + ' - ' + e[3] + '.mp3');
+								formData.append('performer', e[4]);
+								formData.append('title', e[3]);
+								let request = new XMLHttpRequest();
+								request.open(
+									'POST',
+									'https://api.telegram.org/bot' +
+									TELEGRAMBOTTOKEN +
+									'/sendAudio?chat_id=' +
+									TELEGRAMCHANEL
+								);
+								request.send(formData);
+							})
 						},
 					})
 				);
@@ -380,69 +324,156 @@
 			});
 	}
 	function vk_get(t) {
-		new Promise((resolve) => {
-			try {
-				let a = AudioUtils.getAudioFromEl(t, !0);
-				ajax.post(
-					URL_AUDIO,
-					{
-						act: 'reload_audio',
-						ids: a.fullId + '_' + a.actionHash + '_' + a.urlHash,
-					},
-					{
-						onDone: (i) => {
-							resolve(i[0]);
-						},
-					}
-				);
-			} catch (err) { }
-		}).then((e) => {
-			console.log([e, vk_decode_url(e[2]), t]);
-
+		reload_audio(t).then((e) => {
+			console.log([e[0], vk_decode_url(e[0][2]), t]);
 			let coverContainer = t.offsetParent.offsetParent.querySelector(".audio_pl__cover");
-			let coverUrl = e[14].split(",")[1]
+			let coverUrl = e[0][14].split(",")[1]
 			if (coverContainer && coverContainer.style.backgroundImage) {
 				coverUrl = coverContainer.style.backgroundImage.slice(5, -2)
 			};
-			let artist = e[4].replace(/(&.+;)/ig, "")
-			let title = e[3].replace(/(&.+;)/ig, "")
+			let albumContainer = t.offsetParent.offsetParent.querySelector(".audio_pl_snippet_info_maintitle");
+			let album = albumContainer ? albumContainer.textContent : e[0][16]
+			let artist = e[0][4].replace(/(&.+;)/ig, "")
+			let title = e[0][3].replace(/(&.+;)/ig, "")
 
-			download(vk_decode_url(e[2]), artist + ' - ' + title + '.mp3', t, { album: "", artist: artist, title: title, cover: { data: coverUrl, description: "front" } });
+			download(vk_decode_url(e[0][2]), t, { album: album, artist: artist, title: title, cover: { data: coverUrl, description: "front" } });
 		});
 	}
 	function vk_to_tg(t) {
-		new Promise((resolve) => {
+		reload_audio(t).then((e) => {
+			console.log([e[0], vk_decode_url(e[0][2]), t]);
+			let coverContainer = t.offsetParent.offsetParent.querySelector(".audio_pl__cover");
+			let coverUrl = e[0][14].split(",")[1]
+			if (coverContainer && coverContainer.style.backgroundImage) {
+				coverUrl = coverContainer.style.backgroundImage.slice(5, -2)
+			};
+			let albumContainer = t.offsetParent.offsetParent.querySelector(".audio_pl_snippet_info_maintitle");
+			let album = albumContainer ? albumContainer.textContent : e[0][16]
+			let artist = e[0][4].replace(/(&.+;)/ig, "")
+			let title = e[0][3].replace(/(&.+;)/ig, "")
+			telegram(vk_decode_url(e[0][2]), t, { album: "", artist: artist, title: title, cover: { data: coverUrl, description: "front" } });
+		});
+	}
+	function reload_audio(t, ids) {
+		ids = (ids && !t) ? ids : (() => { let a = AudioUtils.getAudioFromEl(t, !0); return a.fullId + '_' + a.actionHash + '_' + a.urlHash })()
+		return new Promise((resolve, reject) => {
 			try {
-				let a = AudioUtils.getAudioFromEl(t, !0);
+
 				ajax.post(
 					URL_AUDIO,
 					{
 						act: 'reload_audio',
-						ids: a.fullId + '_' + a.actionHash + '_' + a.urlHash,
+						ids: ids,
 					},
 					{
 						onDone: (i) => {
-							resolve(i[0]);
+							resolve(i);
 						},
 					}
 				);
-			} catch (err) { }
-		}).then((e) => {
-			put_tg(vk_decode_url(e[2]), e, t);
-		});
+			} catch (err) { reject(err) }
+		})
 	}
-	function vk_decode_url(u) {
-		rs = s(u).replace('/index.m3u8', '.mp3');
-		rs = rs.split('/');
-		if (rs.length == 8) {
-			delete rs[5];
-		} else {
-			delete rs[4];
+	async function getCover(cover) {
+		try {
+			if (typeof (cover) == "string") {
+				let res = await fetch(cover)
+				return await res.arrayBuffer()
+			} else {
+				return cover
+			}
+		} catch (error) {
+			return ""
 		}
-		return rs.join('/');
-	}
 
-	async function download(url, filename, t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
+
+	}
+	async function readMusic(reader, loaded, total, buffer, controller, div, t, onDone = () => { }) {
+		reader
+			.read()
+			.then(async ({ done, value }) => {
+				if (done) {
+					controller.close();
+					onDone(buffer);
+					return buffer;
+				}
+				buffer.set(value, loaded);
+				loaded += value.byteLength;
+				div.style =
+					'background-color: #a6c7e8;    border-radius: 4px;position: absolute;width:' +
+					(loaded / total) * 100 +
+					'%;height: ' +
+					t.offsetHeight +
+					'px;';
+				await readMusic(reader, loaded, total, buffer, controller, div, t, onDone);
+			})
+			.catch((error) => {
+				console.error(error);
+				controller.error(error);
+			});
+	}
+	async function telegram(url = "", t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
+		let div = document.createElement('div');
+		div.style =
+			'background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: ' +
+			t.offsetHeight +
+			'px;';
+		t.parentElement.prepend(div);
+		fetch(url)
+			.then((response) => {
+				if (!response.ok) {
+					throw Error(response.status + ' ' + response.statusText);
+				}
+				if (!response.body) {
+					throw Error('ReadableStream not yet supported in this browser.');
+				}
+				const contentLength = response.headers.get('content-length');
+				if (!contentLength) {
+					throw Error('Content-Length response header unavailable');
+				}
+				const total = parseInt(contentLength, 10);
+				let loaded = 0;
+				let buffer = new Uint8Array(total);
+
+				return new Response(
+					new ReadableStream({
+						start(controller) {
+							readMusic(response.body.getReader(), loaded, total, buffer, controller, div, t, async (ret) => {
+								const writer = new ID3Writer(ret);
+								tags.title && writer.setFrame('TIT2', tags.title)
+								tags.artist && writer.setFrame('TPE1', [tags.artist])
+								tags.album && writer.setFrame('TALB', tags.album);
+								tags.cover.data && tags.cover.description && writer.setFrame('APIC', {
+									type: 3,
+									data: await getCover(tags.cover.data),
+									description: tags.cover.description
+								})
+								writer.addTag();
+								let b = new Blob([writer.arrayBuffer]);
+								let formData = new FormData();
+								let blob = new Blob([b], { type: 'audio/mp3' });
+								formData.append('audio', blob, tags.artist + ' - ' + tags.title + '.mp3');
+								formData.append('performer', tags.artist);
+								formData.append('title', tags.title);
+								let request = new XMLHttpRequest();
+								request.open(
+									'POST',
+									'https://api.telegram.org/bot' +
+									TELEGRAMBOTTOKEN +
+									'/sendAudio?chat_id=' +
+									TELEGRAMCHANEL
+								);
+								request.send(formData);
+							})
+						},
+					})
+				);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
+	async function download(url, t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
 		let div = document.createElement('div');
 		try {
 			div.style =
@@ -466,66 +497,26 @@
 				const total = parseInt(contentLength, 10);
 				let loaded = 0;
 				let buffer = new Uint8Array(total);
-
 				return new Response(
 					new ReadableStream({
 						start(controller) {
-							const reader = response.body.getReader();
-							read();
-							async function read() {
-								reader
-									.read()
-									.then(async function ({ done, value }) {
-										if (done) {
-											controller.close();
-											const writer = new ID3Writer(buffer);
-											if (tags.title) {
-												writer.setFrame('TIT2', tags.title)
-											}
-											if (tags.artist) {
-												writer.setFrame('TPE1', [tags.artist])
-											}
-											if (tags.album) {
-												writer.setFrame('TALB', tags.album);
-											}
-											if (tags.cover.data && tags.cover.description) {
-												let coverBuffer = tags.cover.data;
-												if (typeof (tags.cover.data) == "string") {
-													let res = await fetch(tags.cover.data)
-													coverBuffer = await res.arrayBuffer()
-												}
-												writer.setFrame('APIC', {
-													type: 3,
-													data: coverBuffer,
-													description: tags.cover.description
-												})
-											}
-											writer.addTag();
-											let b = new Blob([writer.arrayBuffer], { type: 'audio/mp3' });
-											let a = document.createElement('a');
-											a.href = URL.createObjectURL(b);
-											a.setAttribute('download', filename);
-											a.click();
-
-											return buffer;
-										}
-										buffer.set(value, loaded);
-										loaded += value.byteLength;
-										try {
-											div.style =
-												'background-color: #c3d0dd;box-shadow: 0px 0px 2px 0px #797979; border-radius: 4px;position: absolute;width:' +
-												(loaded / total) * 100 +
-												'%;height: ' +
-												t.offsetHeight +
-												'px;';
-										} catch (error) { }
-										read();
-									})
-									.catch((error) => {
-										console.error(error);
-										controller.error(error);
-									});
-							}
+							readMusic(response.body.getReader(), loaded, total, buffer, controller, div, t, async (buffer) => {
+								const writer = new ID3Writer(buffer);
+								tags.title && writer.setFrame('TIT2', tags.title)
+								tags.artist && writer.setFrame('TPE1', [tags.artist])
+								tags.album && writer.setFrame('TALB', tags.album);
+								tags.cover.data && tags.cover.description && writer.setFrame('APIC', {
+									type: 3,
+									data: await getCover(tags.cover.data),
+									description: tags.cover.description
+								})
+								writer.addTag();
+								let b = new Blob([writer.arrayBuffer], { type: 'audio/mp3' });
+								let a = document.createElement('a');
+								a.href = URL.createObjectURL(b);
+								a.setAttribute('download', tags.artist + ' - ' + tags.title + '.mp3');
+								a.click();
+							})
 						},
 					})
 				);
@@ -533,6 +524,17 @@
 			.catch((error) => {
 				console.error(error);
 			});
+	}
+	//vk_decode_url
+	function vk_decode_url(u) {
+		rs = s(u).replace('/index.m3u8', '.mp3');
+		rs = rs.split('/');
+		if (rs.length == 8) {
+			delete rs[5];
+		} else {
+			delete rs[4];
+		}
+		return rs.join('/');
 	}
 
 	let id = vk.id;
