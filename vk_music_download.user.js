@@ -2,7 +2,7 @@
 // @name Vk music downloader
 // @description:ru Кнопки для скачивания музыки
 // @namespace Slowmoney
-// @version     20.06.2020
+// @version     28.06.2020
 // @downloadUrl   https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js
 // @updateUrl     https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.meta.js
 // @match       *://vkontakte.ru/*
@@ -38,7 +38,8 @@
 	if (w.self != w.top) {
 		return;
 	}
-
+	//ID3 модуль теггера
+	!function (e, t) { "object" == typeof exports && "undefined" != typeof module ? module.exports = t() : "function" == typeof define && define.amd ? define(t) : (e = e || self).ID3Writer = t() }(this, function () { "use strict"; function a(e) { return String(e).split("").map(function (e) { return e.charCodeAt(0) }) } function o(e) { return new Uint8Array(a(e)) } function u(e) { var t = new Uint8Array(2 * e.length); return new Uint16Array(t.buffer).set(a(e)), t } return function () { var e = t.prototype; function t(e) { if (!(e && "object" == typeof e && "byteLength" in e)) throw new Error("First argument should be an instance of ArrayBuffer or Buffer"); this.arrayBuffer = e, this.padding = 4096, this.frames = [], this.url = "" } return e._setIntegerFrame = function (e, t) { var a = parseInt(t, 10); this.frames.push({ name: e, value: a, size: 11 + a.toString().length }) }, e._setStringFrame = function (e, t) { var a = t.toString(); this.frames.push({ name: e, value: a, size: 13 + 2 * a.length }) }, e._setPictureFrame = function (e, t, a, r) { var n, s, i, c = function (e) { if (!e || !e.length) return null; if (255 === e[0] && 216 === e[1] && 255 === e[2]) return "image/jpeg"; if (137 === e[0] && 80 === e[1] && 78 === e[2] && 71 === e[3]) return "image/png"; if (71 === e[0] && 73 === e[1] && 70 === e[2]) return "image/gif"; if (87 === e[8] && 69 === e[9] && 66 === e[10] && 80 === e[11]) return "image/webp"; var t = 73 === e[0] && 73 === e[1] && 42 === e[2] && 0 === e[3], a = 77 === e[0] && 77 === e[1] && 0 === e[2] && 42 === e[3]; return t || a ? "image/tiff" : 66 === e[0] && 77 === e[1] ? "image/bmp" : 0 === e[0] && 0 === e[1] && 1 === e[2] && 0 === e[3] ? "image/x-icon" : null }(new Uint8Array(t)), o = a.toString(); if (!c) throw new Error("Unknown picture MIME type"); a || (r = !1), this.frames.push({ name: "APIC", value: t, pictureType: e, mimeType: c, useUnicodeEncoding: r, description: o, size: (n = t.byteLength, s = c.length, i = o.length, 11 + s + 1 + 1 + (r ? 2 + 2 * (i + 1) : i + 1) + n) }) }, e._setLyricsFrame = function (e, t, a) { var r, n, s = e.split("").map(function (e) { return e.charCodeAt(0) }), i = t.toString(), c = a.toString(); this.frames.push({ name: "USLT", value: c, language: s, description: i, size: (r = i.length, n = c.length, 16 + 2 * r + 2 + 2 + 2 * n) }) }, e._setCommentFrame = function (e, t, a) { var r, n, s = e.split("").map(function (e) { return e.charCodeAt(0) }), i = t.toString(), c = a.toString(); this.frames.push({ name: "COMM", value: c, language: s, description: i, size: (r = i.length, n = c.length, 16 + 2 * r + 2 + 2 + 2 * n) }) }, e._setPrivateFrame = function (e, t) { var a, r, n = e.toString(); this.frames.push({ name: "PRIV", value: t, id: n, size: (a = n.length, r = t.byteLength, 10 + a + 1 + r) }) }, e._setUserStringFrame = function (e, t) { var a, r, n = e.toString(), s = t.toString(); this.frames.push({ name: "TXXX", description: n, value: s, size: (a = n.length, r = s.length, 13 + 2 * a + 2 + 2 + 2 * r) }) }, e._setUrlLinkFrame = function (e, t) { var a = t.toString(); this.frames.push({ name: e, value: a, size: 10 + a.length }) }, e.setFrame = function (e, t) { switch (e) { case "TPE1": case "TCOM": case "TCON": if (!Array.isArray(t)) throw new Error(e + " frame value should be an array of strings"); var a = "TCON" === e ? ";" : "/", r = t.join(a); this._setStringFrame(e, r); break; case "TLAN": case "TIT1": case "TIT2": case "TIT3": case "TALB": case "TPE2": case "TPE3": case "TPE4": case "TRCK": case "TPOS": case "TMED": case "TPUB": case "TCOP": case "TKEY": case "TEXT": case "TSRC": this._setStringFrame(e, t); break; case "TBPM": case "TLEN": case "TDAT": case "TYER": this._setIntegerFrame(e, t); break; case "USLT": if (t.language = t.language || "eng", !("object" == typeof t && "description" in t && "lyrics" in t)) throw new Error("USLT frame value should be an object with keys description and lyrics"); if (t.language && !t.language.match(/[a-z]{3}/i)) throw new Error("Language must be coded following the ISO 639-2 standards"); this._setLyricsFrame(t.language, t.description, t.lyrics); break; case "APIC": if (!("object" == typeof t && "type" in t && "data" in t && "description" in t)) throw new Error("APIC frame value should be an object with keys type, data and description"); if (t.type < 0 || 20 < t.type) throw new Error("Incorrect APIC frame picture type"); this._setPictureFrame(t.type, t.data, t.description, !!t.useUnicodeEncoding); break; case "TXXX": if (!("object" == typeof t && "description" in t && "value" in t)) throw new Error("TXXX frame value should be an object with keys description and value"); this._setUserStringFrame(t.description, t.value); break; case "WCOM": case "WCOP": case "WOAF": case "WOAR": case "WOAS": case "WORS": case "WPAY": case "WPUB": this._setUrlLinkFrame(e, t); break; case "COMM": if (t.language = t.language || "eng", !("object" == typeof t && "description" in t && "text" in t)) throw new Error("COMM frame value should be an object with keys description and text"); if (t.language && !t.language.match(/[a-z]{3}/i)) throw new Error("Language must be coded following the ISO 639-2 standards"); this._setCommentFrame(t.language, t.description, t.text); break; case "PRIV": if (!("object" == typeof t && "id" in t && "data" in t)) throw new Error("PRIV frame value should be an object with keys id and data"); this._setPrivateFrame(t.id, t.data); break; default: throw new Error("Unsupported frame " + e) }return this }, e.removeTag = function () { if (!(this.arrayBuffer.byteLength < 10)) { var e, t, a = new Uint8Array(this.arrayBuffer), r = a[3], n = ((e = [a[6], a[7], a[8], a[9]])[0] << 21) + (e[1] << 14) + (e[2] << 7) + e[3] + 10; if (!(73 !== (t = a)[0] || 68 !== t[1] || 51 !== t[2] || r < 2 || 4 < r)) this.arrayBuffer = new Uint8Array(a.subarray(n)).buffer } }, e.addTag = function () { this.removeTag(); var e, t, r = [255, 254], a = 10 + this.frames.reduce(function (e, t) { return e + t.size }, 0) + this.padding, n = new ArrayBuffer(this.arrayBuffer.byteLength + a), s = new Uint8Array(n), i = 0, c = []; return c = [73, 68, 51, 3], s.set(c, i), i += c.length, i++, i++, c = [(e = a - 10) >>> 21 & (t = 127), e >>> 14 & t, e >>> 7 & t, e & t], s.set(c, i), i += c.length, this.frames.forEach(function (e) { var t, a; switch (c = o(e.name), s.set(c, i), i += c.length, t = e.size - 10, c = [t >>> 24 & (a = 255), t >>> 16 & a, t >>> 8 & a, t & a], s.set(c, i), i += c.length, i += 2, e.name) { case "WCOM": case "WCOP": case "WOAF": case "WOAR": case "WOAS": case "WORS": case "WPAY": case "WPUB": c = o(e.value), s.set(c, i), i += c.length; break; case "TPE1": case "TCOM": case "TCON": case "TLAN": case "TIT1": case "TIT2": case "TIT3": case "TALB": case "TPE2": case "TPE3": case "TPE4": case "TRCK": case "TPOS": case "TKEY": case "TMED": case "TPUB": case "TCOP": case "TEXT": case "TSRC": c = [1].concat(r), s.set(c, i), i += c.length, c = u(e.value), s.set(c, i), i += c.length; break; case "TXXX": case "USLT": case "COMM": c = [1], "USLT" !== e.name && "COMM" !== e.name || (c = c.concat(e.language)), c = c.concat(r), s.set(c, i), i += c.length, c = u(e.description), s.set(c, i), i += c.length, c = [0, 0].concat(r), s.set(c, i), i += c.length, c = u(e.value), s.set(c, i), i += c.length; break; case "TBPM": case "TLEN": case "TDAT": case "TYER": i++, c = o(e.value), s.set(c, i), i += c.length; break; case "PRIV": c = o(e.id), s.set(c, i), i += c.length, i++, s.set(new Uint8Array(e.value), i), i += e.value.byteLength; break; case "APIC": c = [e.useUnicodeEncoding ? 1 : 0], s.set(c, i), i += c.length, c = o(e.mimeType), s.set(c, i), i += c.length, c = [0, e.pictureType], s.set(c, i), i += c.length, e.useUnicodeEncoding ? (c = [].concat(r), s.set(c, i), i += c.length, c = u(e.description), s.set(c, i), i += c.length, i += 2) : (c = o(e.description), s.set(c, i), i += c.length, i++), s.set(new Uint8Array(e.value), i), i += e.value.byteLength } }), i += this.padding, s.set(new Uint8Array(this.arrayBuffer), i), this.arrayBuffer = n }, e.getBlob = function () { return new Blob([this.arrayBuffer], { type: "audio/mpeg" }) }, e.getURL = function () { return this.url || (this.url = URL.createObjectURL(this.getBlob())), this.url }, e.revokeURL = function () { URL.revokeObjectURL(this.url) }, t }() });
 	const SETTINGS = {
 		btn: {
 			telegram: true,
@@ -76,16 +77,16 @@
 				SETTINGS.btn.topdownload
 			) {
 				// Кнопка скачать в верхней части музыки
-				let div = document.createElement('div');
-				div.onclick = function () {
+				let btn_dwnl = document.createElement('div');
+				btn_dwnl.onclick = function () {
 					return vk_playlist_download(this);
 				};
-				div.className = CLASSNAME_BTN_LOAD;
+				btn_dwnl.className = CLASSNAME_BTN_LOAD;
 				let el =
 					mutation.addedNodes[0].children[0].lastElementChild.firstElementChild.children[0].children[2]
 						.children[2].lastElementChild.lastElementChild;
-				div.innerHTML = TEXT_LOAD;
-				el.prepend(div);
+				btn_dwnl.innerHTML = TEXT_LOAD;
+				el.prepend(btn_dwnl);
 			}
 			if (
 				mutation.type == 'childList' &&
@@ -93,12 +94,12 @@
 				mutation.addedNodes[0].className == '_audio_row__actions audio_row__actions'
 			) {
 				// Кнопка скачать при навадке на песню
-				let button = document.createElement('button');
-				button.onclick = function () {
+				let btn_dwnl = document.createElement('button');
+				btn_dwnl.onclick = function () {
 					vk_get(this.parentNode.parentNode.parentNode);
 					return cancelEvent(event);
 				};
-				button.onmouseover = function () {
+				btn_dwnl.onmouseover = function () {
 					let u = {
 						text: () => TEXT_LOAD,
 						black: 1,
@@ -109,17 +110,18 @@
 					};
 					showTooltip(this, u);
 				};
-				button.className = CLASSNAME_BTN_INLINE;
-				button.style = 'background-image: url(' + ICON_LOAD + ');';
-				mutation.addedNodes[0].append(button);
+				btn_dwnl.className = CLASSNAME_BTN_INLINE;
+				btn_dwnl.style = 'background-image: url(' + ICON_LOAD + ');';
+				mutation.addedNodes[0].append(btn_dwnl);
+
 				// Кнопка Отправить в телеграм канал при навадке на песню
 				if (SETTINGS.btn.telegram) {
-					let button_tg = document.createElement('button');
-					button_tg.onclick = function () {
+					let btn_tg = document.createElement('button');
+					btn_tg.onclick = function () {
 						vk_to_tg(this.parentNode.parentNode.parentNode);
 						return cancelEvent(event);
 					};
-					button_tg.onmouseover = function () {
+					btn_tg.onmouseover = function () {
 						let u = {
 							text: () => TEXT_PUTTELEGRAM,
 							black: 1,
@@ -130,16 +132,16 @@
 						};
 						showTooltip(this, u);
 					};
-					button_tg.className = CLASSNAME_BTN_INLINE;
-					button_tg.style = 'background-image: url(' + ICON_TELEGRAM + ');';
-					mutation.addedNodes[0].prepend(button_tg);
+					btn_tg.className = CLASSNAME_BTN_INLINE;
+					btn_tg.style = 'background-image: url(' + ICON_TELEGRAM + ');';
+					mutation.addedNodes[0].prepend(btn_tg);
 				}
 
 				// Кнопка Копировать название при навадке на песню
 				// НЕ РАБОТАЕТ
 				if (SETTINGS.btn.copy) {
-					let button_ds = document.createElement('button');
-					button_ds.onclick = function () {
+					let btn_copy = document.createElement('button');
+					btn_copy.onclick = function () {
 						let input = document.createElement('input');
 						input.value = 'test';
 						input.select();
@@ -152,7 +154,7 @@
 						}
 						return cancelEvent(event);
 					};
-					button_ds.onmouseover = function () {
+					btn_copy.onmouseover = function () {
 						let u = {
 							text: () => TEXT_COPY,
 							black: 1,
@@ -163,9 +165,9 @@
 						};
 						showTooltip(this, u);
 					};
-					button_ds.className = CLASSNAME_BTN_INLINE;
-					button_ds.style = 'background-image: url(' + ICON_COPY + ')';
-					mutation.addedNodes[0].prepend(button_ds);
+					btn_copy.className = CLASSNAME_BTN_INLINE;
+					btn_copy.style = 'background-image: url(' + ICON_COPY + ')';
+					mutation.addedNodes[0].prepend(btn_copy);
 				}
 			}
 		});
@@ -180,16 +182,17 @@
 	// Кнопка Скачать
 	try {
 		if (SETTINGS.btn.download) {
-			let div = document.createElement('div');
-			div.onclick = function () {
+			let btn_dwnl = document.createElement('div');
+			btn_dwnl.onclick = function () {
 				vk_playlist_download(this);
 			};
-			div.className = CLASSNAME_BTN_LOAD;
+			btn_dwnl.className = CLASSNAME_BTN_LOAD;
 			let el = document.querySelector('.ActionsMenu__inner');
-			div.innerHTML = TEXT_LOAD;
-			el.prepend(div);
+			btn_dwnl.innerHTML = TEXT_LOAD;
+			el.prepend(btn_dwnl);
 		}
-	} catch (e) {}
+	} catch (e) { }
+
 	function vk_playlist_download(t) {
 		let row = document.querySelectorAll('.audio_pl_snippet__list');
 		let playlist_id = [];
@@ -206,11 +209,12 @@
 		console.log(playlist_id);
 		getAudioPlayer()._playlists.forEach((t, i) => {
 			if (t._type == playlist_id[0] && t._ownerId == playlist_id[1] && t._albumId == playlist_id[2]) {
-				vk_url_array_playlist_get(t._list, row);
+				vk_url_array_playlist_get(t, row);
 			}
 		});
 	}
-	function vk_url_array_playlist_get(a, row) {
+	function vk_url_array_playlist_get(playlistData, row) {
+		let a = playlistData._list;
 		console.log(a);
 		let n = 10;
 		for (let offset = 0; offset < a.length; offset += n) {
@@ -226,10 +230,10 @@
 						console.log('cont ', urlHash);
 						continue;
 					}
-				} catch (error) {}
+				} catch (error) { }
 			}
 			console.log(str.slice(0, -1));
-			new Promise((resolve) => {
+			new Promise((resolve, reject) => {
 				try {
 					ajax.post(
 						URL_AUDIO,
@@ -243,21 +247,40 @@
 							},
 						}
 					);
-				} catch (err) {}
-			}).then((e) => {
+				} catch (err) { reject(err) }
+			}).then(async (e) => {
+				let coverData = playlistData._coverUrl;
+
+				if (playlistData._coverUrl) {
+					let res = await fetch(playlistData._coverUrl)
+					coverData = await res.arrayBuffer()
+				}
+
+
+
 				try {
 					e.forEach((t, i) => {
+                        /*  if (!playlistData._isOfficial) {
+                             let t = e[14].split(",")
+                             coverData = t[t.length-1];
+ 
+                             
+                         } */
+						let artist = t[4].replace(/(&.+;)/ig, "")
+						let title = t[3].replace(/(&.+;)/ig, "")
+						let album = playlistData._title
 						download(
 							vk_decode_url(t[2]),
-							t[4] + ' - ' + t[3] + '.mp3',
-							row[i + offset].children[0].querySelector('.audio_row__inner')
+							artist + ' - ' + title + '.mp3',
+							row[i + offset].children[0].querySelector('.audio_row__inner'),
+							{ album: album, artist: artist, title: title, cover: { data: coverData, description: "front" } }
 						);
 					});
-				} catch (error) {}
+				} catch (e) { }
 			});
 		}
 	}
-	async function put_tg(url, e, t) {
+	async function put_tg(url = "", e, t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
 		let div = document.createElement('div');
 		div.style =
 			'background-color: #d48f8a;width: 100%;position: absolute;    border-radius: 4px;height: ' +
@@ -279,32 +302,58 @@
 				const total = parseInt(contentLength, 10);
 				let loaded = 0;
 				let buffer = new Uint8Array(total);
+
 				return new Response(
 					new ReadableStream({
 						start(controller) {
 							const reader = response.body.getReader();
 							read();
-							function read() {
+							async function read() {
 								reader
 									.read()
-									.then(({done, value}) => {
+									.then(async ({ done, value }) => {
 										if (done) {
 											controller.close();
-											let b = new Blob([buffer]);
+											const writer = new ID3Writer(buffer);
+											if (tags.title) {
+												writer.setFrame('TIT2', tags.title)
+											}
+											if (tags.artist) {
+												writer.setFrame('TPE1', [tags.artist])
+											}
+											if (tags.album) {
+												writer.setFrame('TALB', tags.album);
+											}
+											if (tags.cover.data && tags.cover.description) {
+												let coverBuffer = tags.cover.data;
+												if (typeof (tags.cover.data) == "string") {
+													let res = await fetch(tags.cover.data)
+													coverBuffer = await res.arrayBuffer()
+												}
+												writer.setFrame('APIC', {
+													type: 3,
+													data: coverBuffer,
+													description: tags.cover.description
+												})
+											}
+											writer.addTag();
+											let b = new Blob([writer.arrayBuffer]);
+
 											let formData = new FormData();
-											let blob = new Blob([b], {type: 'audio/mp3'});
+											let blob = new Blob([b], { type: 'audio/mp3' });
 											formData.append('audio', blob, e[4] + ' - ' + e[3] + '.mp3');
 											formData.append('performer', e[4]);
 											formData.append('title', e[3]);
 											let request = new XMLHttpRequest();
 											request.open(
 												'POST',
-												'https://api.telegram.org/' +
-													TELEGRAMBOTTOKEN +
-													'/sendAudio?chat_id=' +
-													TELEGRAMCHANEL
+												'https://api.telegram.org/bot' +
+												TELEGRAMBOTTOKEN +
+												'/sendAudio?chat_id=' +
+												TELEGRAMCHANEL
 											);
 											request.send(formData);
+
 											return buffer;
 										}
 										buffer.set(value, loaded);
@@ -346,10 +395,19 @@
 						},
 					}
 				);
-			} catch (err) {}
+			} catch (err) { }
 		}).then((e) => {
 			console.log([e, vk_decode_url(e[2]), t]);
-			download(vk_decode_url(e[2]), e[4] + ' - ' + e[3] + '.mp3', t);
+
+			let coverContainer = t.offsetParent.offsetParent.querySelector(".audio_pl__cover");
+			let coverUrl = e[14].split(",")[1]
+			if (coverContainer && coverContainer.style.backgroundImage) {
+				coverUrl = coverContainer.style.backgroundImage.slice(5, -2)
+			};
+			let artist = e[4].replace(/(&.+;)/ig, "")
+			let title = e[3].replace(/(&.+;)/ig, "")
+
+			download(vk_decode_url(e[2]), artist + ' - ' + title + '.mp3', t, { album: "", artist: artist, title: title, cover: { data: coverUrl, description: "front" } });
 		});
 	}
 	function vk_to_tg(t) {
@@ -368,7 +426,7 @@
 						},
 					}
 				);
-			} catch (err) {}
+			} catch (err) { }
 		}).then((e) => {
 			put_tg(vk_decode_url(e[2]), e, t);
 		});
@@ -383,7 +441,8 @@
 		}
 		return rs.join('/');
 	}
-	async function download(url, filename, t) {
+
+	async function download(url, filename, t, tags = { album: "", artist: "", title: "", cover: { data: "", description: "" } }) {
 		let div = document.createElement('div');
 		try {
 			div.style =
@@ -391,7 +450,7 @@
 				t.offsetHeight +
 				'px;';
 			t.parentElement.prepend(div);
-		} catch (error) {}
+		} catch (error) { }
 		fetch(url)
 			.then((response) => {
 				if (!response.ok) {
@@ -407,22 +466,47 @@
 				const total = parseInt(contentLength, 10);
 				let loaded = 0;
 				let buffer = new Uint8Array(total);
+
 				return new Response(
 					new ReadableStream({
 						start(controller) {
 							const reader = response.body.getReader();
 							read();
-							function read() {
+							async function read() {
 								reader
 									.read()
-									.then(({done, value}) => {
+									.then(async function ({ done, value }) {
 										if (done) {
 											controller.close();
-											let b = new Blob([buffer], {type: 'audio/mp3'});
+											const writer = new ID3Writer(buffer);
+											if (tags.title) {
+												writer.setFrame('TIT2', tags.title)
+											}
+											if (tags.artist) {
+												writer.setFrame('TPE1', [tags.artist])
+											}
+											if (tags.album) {
+												writer.setFrame('TALB', tags.album);
+											}
+											if (tags.cover.data && tags.cover.description) {
+												let coverBuffer = tags.cover.data;
+												if (typeof (tags.cover.data) == "string") {
+													let res = await fetch(tags.cover.data)
+													coverBuffer = await res.arrayBuffer()
+												}
+												writer.setFrame('APIC', {
+													type: 3,
+													data: coverBuffer,
+													description: tags.cover.description
+												})
+											}
+											writer.addTag();
+											let b = new Blob([writer.arrayBuffer], { type: 'audio/mp3' });
 											let a = document.createElement('a');
 											a.href = URL.createObjectURL(b);
 											a.setAttribute('download', filename);
 											a.click();
+
 											return buffer;
 										}
 										buffer.set(value, loaded);
@@ -434,7 +518,7 @@
 												'%;height: ' +
 												t.offsetHeight +
 												'px;';
-										} catch (error) {}
+										} catch (error) { }
 										read();
 									})
 									.catch((error) => {
@@ -450,6 +534,7 @@
 				console.error(error);
 			});
 	}
+
 	let id = vk.id;
 	let n = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=',
 		i = {
@@ -458,7 +543,7 @@
 			},
 			r: function (e, t) {
 				e = e.split('');
-				for (let i, o = n + n, s = e.length; s--; ) (i = o.indexOf(e[s])), ~i && (e[s] = o.substr(i - t, 1));
+				for (let i, o = n + n, s = e.length; s--;) (i = o.indexOf(e[s])), ~i && (e[s] = o.substr(i - t, 1));
 				return e.join('');
 			},
 			s: function (e, t) {
@@ -466,7 +551,7 @@
 				if (n) {
 					let i = r(e, t),
 						o = 0;
-					for (e = e.split(''); ++o < n; ) e[o] = e.splice(i[n - 1 - o], 1, e[o])[0];
+					for (e = e.split(''); ++o < n;) e[o] = e.splice(i[n - 1 - o], 1, e[o])[0];
 					e = e.join('');
 				}
 				return e;
@@ -495,7 +580,7 @@
 				n = '' === t[1] ? '' : vk_a(t[1]);
 			if (((t = vk_a(t[0])), 'string' != typeof n || !t)) return e;
 			n = n ? n.split(String.fromCharCode(9)) : [];
-			for (let s, r, l = n.length; l--; ) {
+			for (let s, r, l = n.length; l--;) {
 				if (((r = n[l].split(String.fromCharCode(11))), (s = r.splice(0, 1, t)[0]), !i[s])) return e;
 				t = i[s].apply(null, r);
 			}
@@ -505,11 +590,11 @@
 	}
 	function vk_a(e) {
 		if (!e || e.length % 4 == 1) return !1;
-		for (var t, i, o = 0, s = 0, a = ''; (i = e.charAt(s++)); )
+		for (var t, i, o = 0, s = 0, a = ''; (i = e.charAt(s++));)
 			(i = n.indexOf(i)),
 				~i &&
-					((t = o % 4 ? 64 * t + i : i), o++ % 4) &&
-					(a += String.fromCharCode(255 & (t >> ((-2 * o) & 6))));
+				((t = o % 4 ? 64 * t + i : i), o++ % 4) &&
+				(a += String.fromCharCode(255 & (t >> ((-2 * o) & 6))));
 		return a;
 	}
 	function r(e, t) {
@@ -517,7 +602,7 @@
 			i = [];
 		if (n) {
 			let o = n;
-			for (t = Math.abs(t); o--; ) (t = ((n * (o + 1)) ^ (t + o)) % n), (i[o] = t);
+			for (t = Math.abs(t); o--;) (t = ((n * (o + 1)) ^ (t + o)) % n), (i[o] = t);
 		}
 		return i;
 	}
