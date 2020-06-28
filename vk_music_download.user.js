@@ -2,7 +2,7 @@
 // @name Vk music downloader
 // @description:ru Кнопки для скачивания музыки
 // @namespace Slowmoney
-// @version     28.06.2020
+// @version     29.06.2020
 // @downloadUrl   https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js
 // @updateUrl     https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.meta.js
 // @match       *://vkontakte.ru/*
@@ -21,12 +21,13 @@
 // @connect     vk.me
 // @connect     vkuseraudio.net
 // @connect     vkuservideo.net
-// @run-at       document-end
+// @run-at       document-body
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // @grant        GM_download
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant 		 GM_setClipboard
 // ==/UserScript==
 (function (window, undefined) {
 	let w;
@@ -43,10 +44,13 @@
 	const SETTINGS = {
 		btn: {
 			telegram: true,
-			copy: false,
+			copy: true,
 			download: true,
 			topdownload: true,
 		},
+		copy: {
+			prepend: "!p "
+		}
 	};
 
 	const TELEGRAMBOTTOKEN = '629439163:AAE6iHZVIYXR1CW7PwK-8hHthuZmdna3weo';
@@ -139,20 +143,17 @@
 				}
 
 				// Кнопка Копировать название при навадке на песню
-				// НЕ РАБОТАЕТ
+				// РАБОТАЕТ
 				if (SETTINGS.btn.copy) {
 					let btn_copy = document.createElement('button');
 					btn_copy.onclick = function () {
-						let input = document.createElement('input');
-						input.value = 'test';
-						input.select();
-						input.setSelectionRange(0, 99999);
-						console.dir(input);
-						try {
-							let successful = document.execCommand('copy');
-						} catch (err) {
-							console.error('Oops, unable to copy');
-						}
+						navigator.permissions.query({ name: "clipboard-write" }).then(result => {
+							if (result.state == "granted" || result.state == "prompt") {
+								let t = AudioUtils.getAudioFromEl(this.parentNode.parentNode.parentNode, !0)
+								navigator.clipboard.writeText(SETTINGS.copy.prepend + t.performer + " - " + t.title)
+							}
+						});
+
 						return cancelEvent(event);
 					};
 					btn_copy.onmouseover = function () {
