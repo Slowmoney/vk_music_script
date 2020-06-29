@@ -2,7 +2,7 @@
 // @name Vk music downloader
 // @description:ru Кнопки для скачивания музыки
 // @namespace Slowmoney
-// @version     29.06.2020
+// @version     29.06.2020:21.06
 // @downloadUrl   https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js
 // @updateUrl     https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.meta.js
 // @match       *://vkontakte.ru/*
@@ -23,9 +23,4 @@
 // @connect     vkuservideo.net
 // @run-at       document-body
 // @grant        unsafeWindow
-// @grant        GM_xmlhttpRequest
-// @grant        GM_download
-// @grant        GM_setValue
-// @grant        GM_getValue
-// @grant 		 GM_setClipboard
 // ==/UserScript==
