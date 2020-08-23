@@ -2,7 +2,7 @@
 // @name Vk music downloader
 // @description:ru Кнопки для скачивания музыки
 // @namespace Slowmoney
-// @version     29.06.2020:21.23
+// @version     23.08.2020.22.42
 // @downloadUrl   https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js
 // @updateUrl     https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.meta.js
 // @match       *://vkontakte.ru/*
@@ -77,10 +77,10 @@
 	new MutationObserver(function (mutations) {
 		mutations.forEach(function (mutation) {
 			if (
-				mutation.type == 'childList' &&
+				SETTINGS.albumDownload.enable&&mutation.type == 'childList' &&
 				mutation.addedNodes.length == 1 &&
-				mutation.addedNodes[0].className == 'ap_layer' &&
-				SETTINGS.albumDownload.enable
+				mutation.addedNodes[0].className == 'ap_layer' 
+				
 			) {
 				// Кнопка скачать в верхней части музыки
 				let btn_dwnl = document.createElement('div');
@@ -338,8 +338,8 @@
 							let c = t[14].split(",")
 							coverData = c[c.length - 1];
 						}
-						let artist = t[4].replace(/(&.+;)/ig, "")
-						let title = t[3].replace(/(&.+;)/ig, "")
+						let artist = decodeHTML(t[4])
+						let title = decodeHTML(t[3])
 						let album = playlistData._title
 						download(
 							vk_decode_url(t[2]),
@@ -370,9 +370,14 @@
 		};
 		let albumContainer = t.offsetParent.offsetParent.querySelector(".audio_pl_snippet_info_maintitle");
 		let album = albumContainer ? albumContainer.textContent : audioD[16]
-		let artist = audioD[4].replace(/(&.+;)/ig, "")
-		let title = audioD[3].replace(/(&.+;)/ig, "")
+		let artist = decodeHTML(audioD[4])
+		let title = decodeHTML(audioD[3])
 		return { album: album, artist: artist, title: title, cover: { data: coverUrl, description: "front" } }
+	}
+	//decode html symbols
+	function decodeHTML(t) {
+		let x = document.createElement('span')
+		return x.innerHTML = t.replace(/<br\s*\/?>/gim, "\n"),x.innerText
 	}
 	//file reader
 	async function readMusic(reader, loaded, total, buffer, controller, div, t, onDone = () => { }) {
