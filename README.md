@@ -1,4 +1,8 @@
 # [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js)
+
+![Inline](/img/inline.png)
+![Album](/img/album.png)
+
 # Основные возможности
 Штука для Download музыки из vk.com
 И так же можно скачивать челые альбомы
