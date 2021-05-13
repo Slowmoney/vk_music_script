@@ -23,6 +23,7 @@
     "serve": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack serve --mode development --devtool eval"
   },
   "dependencies": {
+    "browser-id3-writer": "^4.4.0",
     "rxjs": "^6.5.1"
   },
   "license": "ISC"

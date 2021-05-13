@@ -1,12 +1,14 @@
+import { AudioData } from "./vk";
+
 export namespace musicHash
 {
     export const vk = {
         get id ()
         {
-            if (!window.vk) {
+            if (!window.unsafeWindow.vk) {
                 return 0
             }
-            return window.vk.id
+            return window.unsafeWindow.vk.id
         }
     }
     const n = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=";
@@ -52,12 +54,12 @@ export namespace musicHash
             );
         },
     };
-    /* function o() {
+    function o() {
           return window.wbopen && ~(window.open + '').indexOf('wbopen');
-      } */
+    }
     function s (e: any)
     {
-        if(/* !o() &&  */ ~e.indexOf("audio_api_unavailable"))
+        if(!o() && ~e.indexOf("audio_api_unavailable"))
         {
             let t = e.split("?extra=")[1].split("#"),
                 n: any = "" === t[1] ? "" : vk_a(t[1]);
@@ -128,4 +130,31 @@ export namespace musicHash
         }
         return str;
     }
+    export function getTags (t: HTMLDivElement, audioD:AudioData):IPrepareAudioTags
+    {
+        const ap_layer = document.querySelector<HTMLDivElement>('.ap_layer_wrap')
+        let coverContainer: HTMLDivElement | null = null
+        let albumContainer: HTMLSpanElement | null = null
+        if(ap_layer)
+        {
+            if (!(!ap_layer.style.display||ap_layer.style.display=="none")) {
+                console.log();
+                let el = document.querySelector<HTMLDivElement>('div.audio_pl_snippet__cover.audio_pl__cover')
+                coverContainer = el
+                let mainTitleEl = document.querySelector<HTMLSpanElement>('span.audio_pl_snippet_info_maintitle')
+                albumContainer = mainTitleEl
+            }
+        }
+		let coverUrl = (() => {let c = audioD[14].split(","); return c[c.length - 1];})()
+		if (coverContainer && coverContainer.style.backgroundImage) 
+			coverUrl = coverContainer.style.backgroundImage.slice(5, -2)
+		let album = albumContainer ? albumContainer.textContent : audioD[16]
+		let artist = decodeHTML(audioD[4])
+		let title = decodeHTML(audioD[3])
+		return { album: album, artist: artist, title: title, cover: { data: coverUrl, description: "front" } } as IPrepareAudioTags
+	}
+    function decodeHTML(str:string) {
+		const x = document.createElement('span')
+		return x.innerHTML = str.replace(/<br\s*\/?>/gim, "\n"),x.innerText
+	}
 }
