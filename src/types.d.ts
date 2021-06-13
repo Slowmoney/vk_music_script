@@ -15,6 +15,7 @@ declare interface Window
     ajax: IAjax
     audioPlaylistLayerWrap: HTMLDivElement;
     getAudioPlayer: () => AudioPlayer;
+    Chat: IChat
 }
 
 interface IVk
@@ -206,4 +207,7 @@ declare module 'browser-id3-writer' {
     export = ID3Writer;
 }
 
-
+interface IChat
+{
+    wrap: HTMLDivElement
+}

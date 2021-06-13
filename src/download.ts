@@ -1,6 +1,4 @@
 import { settings } from "."
-import { musicHash } from "./musicHash"
-
 import ID3Writer from 'browser-id3-writer';
 export namespace Download
 {

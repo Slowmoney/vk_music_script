@@ -1,11 +1,8 @@
 import { Buttons } from "./button";
-import { musicHash } from "./musicHash";
+import { Queue } from "./queue";
 import { Settings } from "./settings";
 
 export const settings = new Settings()
-
-console.log("lals", musicHash.vk.id, window.vk);
-/* musicHash.vk_decode_url("ssadasd"); */
 
 new MutationObserver(function (mutations)
 {
@@ -146,6 +143,20 @@ function checkMenu ()
     if(document.querySelector("#top_profile_menu"))
     {
         addSettings()
+
+        const info = document.createElement('a')
+        info.classList.add("chat_tab_wrap")
+        window.unsafeWindow.Chat.wrap.prepend(info)
+        const chat_onl_cont = document.createElement('div')
+        chat_onl_cont.classList.add("chat_onl_cont")
+        info.append(chat_onl_cont)
+        const chat_onl = document.createElement('div')
+        //chat_onl.classList.add("chat_onl")
+        chat_onl.style.color = "#b2b2b2"
+        chat_onl_cont.append(chat_onl)
+        chat_onl.id = "queueCount"
+        chat_onl.innerHTML = "0";
+        //info.innerHTML = `<div class="chat_onl_cont"><div class="chat_onl" id="chat_onl">4</div></div>`
     }
     clearInterval(interval)
 }

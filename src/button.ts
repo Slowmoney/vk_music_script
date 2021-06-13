@@ -1,18 +1,7 @@
 import { settings } from ".";
 import { Download } from "./download";
-import { musicHash } from "./musicHash";
 import { Queue } from "./queue";
-function* chunks<T extends any[]> (arr: T, n: number): Generator<AudioData[], void, unknown>
-{
-    for(let i = 0; i < arr.length; i += n)
-    {
-        yield arr.slice(i, i + n);
-    }
-}
-function sleep (timeout: number)
-{
-    return new Promise<void>((r) => setTimeout(r, timeout))
-}
+
 export namespace Buttons
 {
     export function inlineDownload (mutation: MutationRecord)
