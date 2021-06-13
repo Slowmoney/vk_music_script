@@ -91,7 +91,7 @@ export class Settings
                 GM_setValue(e.name, component)
             })
             checkbox.type = "checkbox"
-            title.append(checkbox)
+            title.prepend(checkbox)
             for (const key in e.prop) {
                 if (Object.prototype.hasOwnProperty.call(e.prop, key)) {
                     const element = e.prop[key];
