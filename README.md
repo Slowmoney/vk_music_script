@@ -1,4 +1,4 @@
-# [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/vk_music_download.user.js)
+# [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/script.user.js)
 
 ![Inline](/img/inline.png)
 ![Album](/img/album.png)
@@ -9,39 +9,16 @@
 - загрузка музыки с vk.com c ID3 тегами и обложкой
 - загрузка целого альбома
 - возможность постить музыку в TG прям из вк
+- выгрузка в телеграм канал плейлистов
 - копирование названия по одной кнопке. Например для бота с музыкой в дискорде
 ## Настройки
 
-как попасть в настройки (кнопка плагина->Manage Script->Vk music downloader->Edit и немного в низ)
-
-```js
-...
-const  SETTINGS = {
-copy: {// кнопка копирования название
-enable:true,//true/false включить выключить кнопки
-prepend:  "!p ",// при копировании вставлять перед строкой
-icon:  '', // иконка для любителей нестандартного
-},
-telegram:{// кнопка постера в TG
-enable:true,//true/false включить выключить кнопки
-token:"", // token бота в телеграмме
-channel:"", // имя канала (chat_id)
-icon:  ''  // иконка для любителей нестандартного
-},
-download:{// кнопка загрузки в строке с песней
-enable:true,//true/false включить выключить кнопки
-icon:  ''  // иконка для любителей нестандартного
-},
-albumDownload:{// кнопка загрузки полного альбома
-enable:true,//true/false включить выключить кнопки
-}
-};
-...
-
-```
+![Settings](/img/settings.png)
 
 # Недостатки
 - обложки плохого качества когда скачивается не с альбома
 
 ### roadmap
 ~~сделать копирование название по кнопке с префиксами для ботов в дискорде~~
+
+#### Сделан перенос на TS

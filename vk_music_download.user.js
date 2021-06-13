@@ -436,8 +436,6 @@
 		} catch (error) {
 			return ""
 		}
-
-
 	}
 	//vk_decode_url
 	function vk_decode_url(u) {
