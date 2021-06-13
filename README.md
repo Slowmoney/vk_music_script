@@ -1,4 +1,4 @@
-# [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/script.user.js)
+# [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/dist/script.user.js)
 
 ![Inline](/img/inline.png)
 ![Album](/img/album.png)
