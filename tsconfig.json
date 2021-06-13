@@ -1,21 +1,20 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "app/*": ["./src/*"]
-    },
-    "strict": true,
-    "esModuleInterop": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2018"
-    ],
-    "removeComments": true,
-    "types": ["./src/types.d.ts"]
-  }
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "strict": true,
+        "esModuleInterop": true,
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "es2018"
+        ],
+        "removeComments": true,
+    }
 }

@@ -46,11 +46,18 @@ export class Settings
         this.texts.set('TEXT_PUTTELEGRAM','Отправить в телеграм')
         this.texts.set('TEXT_COPY','Скопировать название')
         this.texts.set('URL_AUDIO', 'al_audio.php')
+
+        console.log(GM_getValue('albumDownload'));
         
-        this.components.set('albumDownload', { name: "albumDownload", enable: true })
-        this.components.set('copy', <Component<{prepend:string}>>{ name: "copy", enable: true, icon: SETTINGS.copy.icon, prop:{prepend:'!p '} })
-        this.components.set('download', { name: "download", enable: true, icon:SETTINGS.download.icon })
-        this.components.set('telegram', <Component<{token:string}>>{ name: "telegram", enable: true, icon:SETTINGS.telegram.icon, prop:{token:''} }) 
+        this.components.set('albumDownload', !GM_getValue('albumDownload')?{ name: "albumDownload", enable: true }:GM_getValue('albumDownload'))
+        this.components.set('copy', !GM_getValue('copy')?<Component<{prepend:string}>>{ name: "copy", enable: true, icon: SETTINGS.copy.icon, prop:{prepend:'!p '} }: GM_getValue('copy'))
+        this.components.set('download', !GM_getValue('download')?{ name: "download", enable: true, icon:SETTINGS.download.icon }: GM_getValue('download'))
+        this.components.set('telegram', !GM_getValue('telegram')?<Component<{token:string}>>{ name: "telegram", enable: true, icon:SETTINGS.telegram.icon, prop:{token:'', channel: ""} }:GM_getValue('telegram'))
+
+        this.components.forEach(e =>
+        {
+            if(!GM_getValue(e.name)) GM_setValue(e.name, e)
+        })
     }
     getText (key:TextName)
     {
@@ -59,6 +66,54 @@ export class Settings
     getComponent<T = any>(key:ComponentName):Component<T> | undefined
     {
         return this.components.get(key)
+    }
+    genSettings ()
+    {
+        const wrap = document.createElement('div')
+        this.components.forEach(e =>
+        {
+            const row = document.createElement('div')
+            const title = document.createElement('h4')
+            title.classList.add('subheader')
+            title.textContent = e.name
+            row.append(title)
+            const checkbox = document.createElement('input')
+            checkbox.classList.add('checkbox')
+            checkbox.checked = e.enable
+            e.enable && checkbox.classList.add('on')
+            checkbox.addEventListener('click', () =>
+            {
+                if (!checkbox.classList.contains('on')) checkbox.classList.add('on')
+                else checkbox.classList.remove('on')
+                e.enable = checkbox.classList.contains('on')
+                const component = this.components.get(e.name)
+                if (component) component.enable = e.enable;
+                GM_setValue(e.name, component)
+            })
+            checkbox.type = "checkbox"
+            row.append(checkbox)
+            for (const key in e.prop) {
+                if (Object.prototype.hasOwnProperty.call(e.prop, key)) {
+                    const element = e.prop[key];
+                    console.log(element, key);
+                    const wrap = document.createElement('div')
+                    wrap.textContent = key
+                    const input = document.createElement('input')
+                    input.value = element
+                    input.classList.add('dark','ape_pl_input')
+                    wrap.append(input)
+                    row.append(wrap)
+                    const component = this.components.get(e.name)
+                    input.addEventListener('input', function(eve){
+                        e.prop[key] = this.value
+                        if(component) component.prop = e.prop;
+                        GM_setValue(e.name, component)
+                    })
+                }
+            }
+            wrap.append(row)
+        })
+        return wrap
     }
 }
 

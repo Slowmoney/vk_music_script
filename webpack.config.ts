@@ -40,7 +40,7 @@ const config: webpack.Configuration = {
      new WebpackUserscript({
         headers: {
           name: 'Vk music downloader',
-          version: '23.08.2020.22.42',
+          version: '14.06.2021.02.06',
           match: '*://*.vk.com/*',
           grant: [
             'GM_setValue',

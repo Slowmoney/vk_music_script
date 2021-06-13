@@ -1,17 +1,50 @@
 import { settings } from ".";
 import { Download } from "./download";
-
+import { musicHash } from "./musicHash";
+import { Queue } from "./queue";
+function* chunks<T extends any[]> (arr: T, n: number): Generator<AudioData[], void, unknown>
+{
+    for(let i = 0; i < arr.length; i += n)
+    {
+        yield arr.slice(i, i + n);
+    }
+}
+function sleep (timeout: number)
+{
+    return new Promise<void>((r) => setTimeout(r, timeout))
+}
 export namespace Buttons
 {
     export function inlineDownload (mutation: MutationRecord)
     {
         let btn_dwnl = document.createElement("button");
-        btn_dwnl.addEventListener('click', function ()
+        btn_dwnl.addEventListener('click', async function (ev)
         {
+            ev.stopPropagation()
+            ev.preventDefault()
+            ev.stopImmediatePropagation()
+            console.dir(this);
             let node = (<HTMLButtonElement>this).parentNode
+
             if(!node) return
             node = node.parentNode
-            if(node && node.parentElement) Download.vk_get(node.parentElement as HTMLDivElement);
+            console.log(node);
+
+            if(node && node.parentElement)
+            {
+                const div = node.parentElement.parentElement?.parentElement as HTMLDivElement
+                const audio = window.unsafeWindow.AudioUtils.getAudioFromEl(div, !!0);
+                try
+                {
+                    const reloaded = await Download.reload_playlist([audio])
+                    Queue.add(reloaded, "idle");
+                    Queue.start();
+                } catch(error)
+                {
+                    console.log(error);
+                }
+            }
+
             return window.unsafeWindow.cancelEvent();
         })
         btn_dwnl.addEventListener('mouseover', function ()
@@ -34,12 +67,20 @@ export namespace Buttons
     {
         // Кнопка скачать в верхней части музыки
         let btn_dwnl = document.createElement("div");
-        btn_dwnl.onclick = function ()
+        btn_dwnl.addEventListener("click", function ()
         {
-            console.log(this);
-           // window.unsafeWindow.getAudioPlayer().getPlaylist(AudioPlaylist.TYPE_PLAYLIST,-2000762277,9762277,"23b92a7585ae083124")
-            return vk_playlist_download(this);
-        };
+            const playlistContainer = window.unsafeWindow.audioPlaylistLayerWrap.querySelector<HTMLDivElement>("._audio_pl")
+            const [_, ownerId, albumId] = (<string>(playlistContainer?.dataset.playlistId)).split("_")
+            const accessHash = <string>playlistContainer?.dataset.accessHash
+            const playlist = window.unsafeWindow.getAudioPlayer().getPlaylist(AudioPlaylist.TYPE_PLAYLIST, +ownerId, +albumId, accessHash, false)
+            playlist.loadAll(async playlist =>
+            {
+                console.log(playlist._list);
+                const reloaded = (await Download.reload_playlist(playlist._list));
+                Queue.add(reloaded, 'idle');
+                Queue.start()
+            })
+        })
         btn_dwnl.className = settings.getText('CLASSNAME_BTN_LOAD');
         let el = (<HTMLDivElement>mutation.addedNodes[0]).querySelector<HTMLDivElement>('.ui_actions_menu._ui_menu')
         btn_dwnl.innerHTML = settings.getText('TEXT_LOAD');
@@ -70,7 +111,7 @@ export namespace Buttons
                     }
                 });
 
-            return window.unsafeWindow.cancelEvent(event);
+            return window.unsafeWindow.cancelEvent();
         };
         btn_copy.onmouseover = function ()
         {
@@ -84,20 +125,46 @@ export namespace Buttons
             };
             window.unsafeWindow.showTooltip(this, u);
         };
+
         btn_copy.className = settings.getText('CLASSNAME_BTN_INLINE');
-        btn_copy.style = "background-image: url(" + settings.getComponent('copy')?.icon + ")";
+        btn_copy.style.cssText = "background-image: url(" + settings.getComponent('copy')?.icon + ")";
         (<HTMLDivElement>mutation.addedNodes[0]).prepend(btn_copy);
     }
 
     export function telegram (mutation: MutationRecord)
     {
         let btn_tg = document.createElement("button");
-        btn_tg.onclick = function ()
+
+        btn_tg.addEventListener('click', async function (ev)
         {
-            vk_to_tg(this.parentNode.parentNode.parentNode);
-            return window.unsafeWindow.cancelEvent(event);
-        };
-        btn_tg.onmouseover = function ()
+            ev.stopPropagation()
+            ev.preventDefault()
+            ev.stopImmediatePropagation()
+            console.dir(this);
+            let node = (<HTMLButtonElement>this).parentNode
+
+            if(!node) return
+            node = node.parentNode
+            console.log(node);
+
+            if(node && node.parentElement)
+            {
+                const div = node.parentElement.parentElement?.parentElement as HTMLDivElement
+                const audio = window.unsafeWindow.AudioUtils.getAudioFromEl(div, !!0);
+                try
+                {
+                    const reloaded = await Download.reload_playlist([audio])
+                    Queue.add(reloaded, "telegram");
+                    Queue.start();
+                } catch(error)
+                {
+                    console.log(error);
+                }
+            }
+
+            return window.unsafeWindow.cancelEvent();
+        })
+        btn_tg.addEventListener('mouseover', function ()
         {
             let u = {
                 text: () => settings.getText('TEXT_PUTTELEGRAM'),
@@ -107,10 +174,33 @@ export namespace Buttons
                 forcetodown: undefined,
                 noZIndex: !0,
             };
-            window.showTooltip(this, u);
-        };
+            window.unsafeWindow.showTooltip(this, u);
+        })
         btn_tg.className = settings.getText('CLASSNAME_BTN_INLINE');
-        btn_tg.style = "background-image: url(" + settings.getComponent('telegram')?.icon + ");";
+        btn_tg.style.cssText = "background-image: url(" + settings.getComponent('telegram')?.icon + ");";
         (<HTMLDivElement>mutation.addedNodes[0]).prepend(btn_tg);
+    }
+    export function albumTelegram (mutation: MutationRecord)
+    {
+        // Кнопка скачать в верхней части музыки
+        let btn_dwnl = document.createElement("div");
+        btn_dwnl.addEventListener("click", function ()
+        {
+            const playlistContainer = window.unsafeWindow.audioPlaylistLayerWrap.querySelector<HTMLDivElement>("._audio_pl")
+            const [_, ownerId, albumId] = (<string>(playlistContainer?.dataset.playlistId)).split("_")
+            const accessHash = <string>playlistContainer?.dataset.accessHash
+            const playlist = window.unsafeWindow.getAudioPlayer().getPlaylist(AudioPlaylist.TYPE_PLAYLIST, +ownerId, +albumId, accessHash, false)
+            playlist.loadAll(async playlist =>
+            {
+                console.log(playlist._list);
+                const reloaded = (await Download.reload_playlist(playlist._list));
+                Queue.add(reloaded, 'telegram');
+                Queue.start()
+            })
+        })
+        btn_dwnl.className = settings.getText('CLASSNAME_BTN_LOAD');
+        let el = (<HTMLDivElement>mutation.addedNodes[0]).querySelector<HTMLDivElement>('.ui_actions_menu._ui_menu')
+        btn_dwnl.innerHTML = settings.getText('TEXT_PUTTELEGRAM');
+        if(el) el.prepend(btn_dwnl);
     }
 }

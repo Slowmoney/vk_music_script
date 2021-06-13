@@ -1,5 +1,3 @@
-import { AudioData } from "./vk";
-
 export namespace musicHash
 {
     export const vk = {
@@ -13,7 +11,7 @@ export namespace musicHash
     }
     const n = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=";
     const op = {
-        v: function (e: any)
+        v: function (e: string)
         {
             return e.split("").reverse().join("");
         },
@@ -130,7 +128,7 @@ export namespace musicHash
         }
         return str;
     }
-    export function getTags (t: HTMLDivElement, audioD:AudioData):IPrepareAudioTags
+    export function getTags (audioD: AudioData):IPrepareAudioTags
     {
         const ap_layer = document.querySelector<HTMLDivElement>('.ap_layer_wrap')
         let coverContainer: HTMLDivElement | null = null
