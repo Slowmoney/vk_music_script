@@ -91,6 +91,7 @@ export class Settings
                 GM_setValue(e.name, component)
             })
             checkbox.type = "checkbox"
+            checkbox.style.marginRight = '15px';
             title.prepend(checkbox)
             for (const key in e.prop) {
                 if (Object.prototype.hasOwnProperty.call(e.prop, key)) {
@@ -98,9 +99,9 @@ export class Settings
                     console.log(element, key);
                     const wrap = document.createElement('div')
                     wrap.textContent = key
-                    
                     const input = document.createElement('input')
                     input.value = element
+                    input.style.marginLeft = "15px"
                     input.classList.add('dark','ape_pl_input')
                     wrap.append(input)
                     row.append(wrap)
