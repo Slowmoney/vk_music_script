@@ -73,7 +73,7 @@ export class Settings
         this.components.forEach(e =>
         {
             const row = document.createElement('div')
-            const title = document.createElement('h4')
+            const title = document.createElement('div')
             title.classList.add('subheader')
             title.textContent = e.name
             row.append(title)
@@ -91,13 +91,14 @@ export class Settings
                 GM_setValue(e.name, component)
             })
             checkbox.type = "checkbox"
-            row.append(checkbox)
+            title.append(checkbox)
             for (const key in e.prop) {
                 if (Object.prototype.hasOwnProperty.call(e.prop, key)) {
                     const element = e.prop[key];
                     console.log(element, key);
                     const wrap = document.createElement('div')
                     wrap.textContent = key
+                    
                     const input = document.createElement('input')
                     input.value = element
                     input.classList.add('dark','ape_pl_input')
@@ -111,6 +112,7 @@ export class Settings
                     })
                 }
             }
+            row.append(document.createElement('hr'))
             wrap.append(row)
         })
         return wrap
