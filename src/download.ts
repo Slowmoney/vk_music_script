@@ -2,6 +2,25 @@ import { settings } from "."
 import ID3Writer from 'browser-id3-writer';
 export namespace Download
 {
+    export async function getChatId ()
+    {
+        const responce = await fetch(`https://api.telegram.org/bot${settings.getComponent("telegram")?.prop.token}/getUpdates`)
+        const data = await responce.json()
+        if(data.ok)
+        {
+            
+            if(Array.isArray(data.result) && data.result.length > 0)
+            {
+                data.result.forEach((e:any) => { 
+                    fetch(`https://api.telegram.org/bot${settings.getComponent("telegram")?.prop.token}/getUpdates?offset=${e.update_id + 1}`)
+                    fetch(`https://api.telegram.org/bot${settings.getComponent("telegram")?.prop.token}/sendMessage?chat_id=${e.message.chat.id}&text=ID вышего канал ${e.message.chat.id}`)
+                });
+                return (data.result[0].message.chat.id) as number;
+            }
+                
+        }
+        return 0
+    }
     async function getCover (cover: string)
     {
         try

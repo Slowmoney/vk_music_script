@@ -1,3 +1,6 @@
+import { Download } from "./download";
+import { h } from "./utils";
+
 const SETTINGS = {
     copy: {// кнопка копирования название
         icon: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2E0YWFiNSIgZD0iTTE5LDIxSDhWN0gxOU0xOSw1SDhBMiwyIDAgMCwwIDYsN1YyMUEyLDIgMCAwLDAgOCwyM0gxOUEyLDIgMCAwLDAgMjEsMjFWN0EyLDIgMCAwLDAgMTksNU0xNiwxSDRBMiwyIDAgMCwwIDIsM1YxN0g0VjNIMTZWMVoiIC8+PC9zdmc+',
@@ -14,97 +17,117 @@ const SETTINGS = {
 };
 
 type TextName = "CLASSNAME_BTN_INLINE" | 'CLASSNAME_BTN_LOAD' | 'TEXT_LOAD' | 'TEXT_PUTTELEGRAM' | 'TEXT_COPY' | 'URL_AUDIO'
-type ComponentName = 'copy'|'telegram'|'download'|'albumDownload'
+type ComponentName = 'copy' | 'telegram' | 'download' | 'albumDownload'
 
 interface Component<T = any>
 {
     name: ComponentName
-    icon?:string
+    icon?: string
     enable: boolean
-    prop?:T
+    prop?: T
 }
 
 export class Settings
 {
     private texts = new Map<TextName, string>()
-    private components = new Map<ComponentName,Component>()
+    private components = new Map<ComponentName, Component>()
     constructor()
     {
-        
-        this.texts.set('CLASSNAME_BTN_INLINE','audio_row__action')
-        this.texts.set('CLASSNAME_BTN_LOAD','ui_actions_menu_item')
-        this.texts.set('TEXT_LOAD','Скачать')
-        this.texts.set('TEXT_PUTTELEGRAM','Отправить в телеграм')
-        this.texts.set('TEXT_COPY','Скопировать название')
+
+        this.texts.set('CLASSNAME_BTN_INLINE', 'audio_row__action')
+        this.texts.set('CLASSNAME_BTN_LOAD', 'ui_actions_menu_item')
+        this.texts.set('TEXT_LOAD', 'Скачать')
+        this.texts.set('TEXT_PUTTELEGRAM', 'Отправить в телеграм')
+        this.texts.set('TEXT_COPY', 'Скопировать название')
         this.texts.set('URL_AUDIO', 'al_audio.php')
 
         console.log(GM_getValue('albumDownload'));
-        
-        this.components.set('albumDownload', !GM_getValue('albumDownload')?{ name: "albumDownload", enable: true }:GM_getValue('albumDownload'))
-        this.components.set('copy', !GM_getValue('copy')?<Component<{prepend:string}>>{ name: "copy", enable: true, icon: SETTINGS.copy.icon, prop:{prepend:'!p '} }: GM_getValue('copy'))
-        this.components.set('download', !GM_getValue('download')?{ name: "download", enable: true, icon:SETTINGS.download.icon }: GM_getValue('download'))
-        this.components.set('telegram', !GM_getValue('telegram')?<Component<{token:string}>>{ name: "telegram", enable: true, icon:SETTINGS.telegram.icon, prop:{token:'', channel: ""} }:GM_getValue('telegram'))
+
+        this.components.set('albumDownload', !GM_getValue('albumDownload') ? { name: "albumDownload", enable: true } : GM_getValue('albumDownload'))
+        this.components.set('copy', !GM_getValue('copy') ? <Component<{ prepend: string }>>{ name: "copy", enable: true, icon: SETTINGS.copy.icon, prop: { prepend: '!p ' } } : GM_getValue('copy'))
+        this.components.set('download', !GM_getValue('download') ? { name: "download", enable: true, icon: SETTINGS.download.icon } : GM_getValue('download'))
+        this.components.set('telegram', !GM_getValue('telegram') ? <Component<{ token: string }>>{ name: "telegram", enable: true, icon: SETTINGS.telegram.icon, prop: { token: '', channel: "" } } : GM_getValue('telegram'))
 
         this.components.forEach(e =>
         {
             if(!GM_getValue(e.name)) GM_setValue(e.name, e)
         })
     }
-    getText (key:TextName)
+    getText (key: TextName)
     {
-        return this.texts.get(key)??''
+        return this.texts.get(key) ?? ''
     }
-    getComponent<T = any>(key:ComponentName):Component<T> | undefined
+    getComponent<T = any> (key: ComponentName): Component<T> | undefined
     {
         return this.components.get(key)
     }
     genSettings ()
     {
-        const wrap = document.createElement('div')
+        const wrap = h('div')
         this.components.forEach(e =>
         {
-            const row = document.createElement('div')
-            const title = document.createElement('div')
-            title.classList.add('subheader')
-            title.textContent = e.name
-            row.append(title)
-            const checkbox = document.createElement('input')
-            checkbox.classList.add('checkbox')
+            const title = h('div', { class: 'subheader' }, e.name)
+            const row = h('div', {}, title)
+            const checkbox = h('input', {class:'checkbox'})
             checkbox.checked = e.enable
             e.enable && checkbox.classList.add('on')
             checkbox.addEventListener('click', () =>
             {
-                if (!checkbox.classList.contains('on')) checkbox.classList.add('on')
+                if(!checkbox.classList.contains('on')) checkbox.classList.add('on')
                 else checkbox.classList.remove('on')
                 e.enable = checkbox.classList.contains('on')
                 const component = this.components.get(e.name)
-                if (component) component.enable = e.enable;
+                if(component) component.enable = e.enable;
                 GM_setValue(e.name, component)
             })
             checkbox.type = "checkbox"
             checkbox.style.marginRight = '15px';
             title.prepend(checkbox)
-            for (const key in e.prop) {
-                if (Object.prototype.hasOwnProperty.call(e.prop, key)) {
+            for(const key in e.prop)
+            {
+                if(Object.prototype.hasOwnProperty.call(e.prop, key))
+                {
                     const element = e.prop[key];
                     console.log(element, key);
-                    const wrap = document.createElement('div')
-                    wrap.textContent = key
-                    const input = document.createElement('input')
+
+                    const wrap = h('div', {}, key)
+                    const input = h('input', {class: ['dark', 'ape_pl_input'], css: 'margin-left: 15px;'})
                     input.value = element
-                    input.style.marginLeft = "15px"
-                    input.classList.add('dark','ape_pl_input')
+                    if(key == 'channel')
+                    {
+                        const button = h('button', {
+                            click: async () =>
+                            {
+                                const chat_id = await Download.getChatId()
+                                const component = this.getComponent<{ channel: string }>('telegram')
+                                if(component && component.prop && component.prop.channel)
+                                {
+                                    component.prop.channel = chat_id.toString();
+                                    GM_setValue(e.name, component)
+                                    input.value = component.prop.channel
+                                }
+                            }
+                        }, "Получить id канала")
+                        wrap.append(button)
+                    }
                     wrap.append(input)
                     row.append(wrap)
                     const component = this.components.get(e.name)
-                    input.addEventListener('input', function(eve){
+                    input.addEventListener('input', function (eve)
+                    {
+                        e.prop[key] = this.value
+                        if(component) component.prop = e.prop;
+                        GM_setValue(e.name, component)
+                    })
+                    input.addEventListener('change', function (eve)
+                    {
                         e.prop[key] = this.value
                         if(component) component.prop = e.prop;
                         GM_setValue(e.name, component)
                     })
                 }
             }
-            row.append(document.createElement('hr'))
+            row.append(h('hr'))
             wrap.append(row)
         })
         return wrap

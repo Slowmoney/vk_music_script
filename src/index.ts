@@ -1,6 +1,6 @@
 import { Buttons } from "./button";
-import { Queue } from "./queue";
 import { Settings } from "./settings";
+import { h } from "./utils";
 
 export const settings = new Settings()
 
@@ -20,10 +20,8 @@ new MutationObserver(function (mutations)
                 settings.getComponent('telegram')?.enable &&
                 settings.getComponent('telegram')?.prop.channel &&
                 settings.getComponent('telegram')?.prop.token
-            )
-            {
-                Buttons.albumTelegram(mutation)
-            }
+            ) Buttons.albumTelegram(mutation)
+            
         }
         if(
             mutation.type == "childList" &&
@@ -41,16 +39,12 @@ new MutationObserver(function (mutations)
                 settings.getComponent('telegram')?.prop.channel &&
                 settings.getComponent('telegram')?.prop.token
             )
-            {
-                Buttons.telegram(mutation)
-            }
+            Buttons.telegram(mutation)
+            
 
             // Кнопка Копировать название при навoдке на песню
             // РАБОТАЕТ
-            if(settings.getComponent('copy')?.enable)
-            {
-                Buttons.copy(mutation)
-            }
+            if(settings.getComponent('copy')?.enable) Buttons.copy(mutation)
         }
     });
 }).observe(document.querySelector("body") as Node, {
@@ -64,56 +58,25 @@ new MutationObserver(function (mutations)
 function addSettings ()
 {
     const wrap = document.querySelector("#top_profile_menu") as HTMLDivElement
-    const btn = document.createElement('a');
-    btn.classList.add('top_profile_mrow')
-    btn.text = "ВК музыка"
+    
+    const btn = h('a', {class: ['top_profile_mrow']}, ["ВК музыка"])
     const sep = wrap.querySelector('div.top_profile_sep')
     sep?.after(btn)
-    console.log(wrap.classList, wrap.classList.contains("shown"));
 
     btn.addEventListener('click', () =>
     {
         const wrap = document.querySelector('div#box_layer_wrap') as HTMLDivElement
         const modal = document.querySelector('div#box_layer') as HTMLDivElement
-
-        const popupContainer = document.createElement('div')
-        popupContainer.classList.add('popup_box_container')
-        popupContainer.style.cssText = 'width: 40%;'
+        const box_x_button = h('div', { class:'box_x_button', click: hide})
+        const box_title_wrap = h('div', { class: 'box_title_wrap' }, box_x_button)
+        const box_body = h('div', { class: 'box_body' })
+        const flat_button = h('button',{class:'flat_button', click: hide}, "Сохранить")
+        const box_controls = h('div', {class:'box_controls'}, flat_button)
+        const box_controls_wrap = h('div', {class:'box_controls_wrap'}, box_controls)
+        const box_layout = h('div', {class: 'box_layout'},[box_title_wrap, box_body, box_controls_wrap])
+        const popupContainer = h('div', {class:'popup_box_container', css: 'width: 40%;'}, box_layout)
         modal?.append(popupContainer)
-
-        const box_layout = document.createElement('div');
-        box_layout.classList.add('box_layout');
-        popupContainer.append(box_layout);
-
-        const box_title_wrap = document.createElement('div')
-        box_title_wrap.classList.add('box_title_wrap')
-        box_layout.append(box_title_wrap)
-
-        box_title_wrap.innerHTML = `<div class="box_title_controls"></div><div class="box_title">Насторойки vk_music_script</div>`
-
-        const box_x_button = document.createElement('div')
-        box_x_button.classList.add('box_x_button')
-        box_title_wrap.prepend(box_x_button)
-        box_x_button.addEventListener('click', hide)
-
-        const box_body = document.createElement('div')
-        box_body.classList.add('box_body')
-        box_layout.append(box_body)
-
-        const box_controls_wrap = document.createElement('div')
-        box_controls_wrap.classList.add('box_controls_wrap')
-        box_layout.append(box_controls_wrap)
-        
-        const box_controls = document.createElement('div')
-        box_controls.classList.add('box_controls')
-        box_controls_wrap.append(box_controls)
-
-        const flat_button = document.createElement('button')
-        flat_button.textContent = "Сохранить"
-        flat_button.classList.add('flat_button')
-        flat_button.addEventListener('click', hide)
-        box_controls.append(flat_button)
-
+        box_title_wrap.innerHTML =  `<div class="box_title_controls"></div><div class="box_title">Насторойки vk_music_script</div>`
         const bg = document.querySelector('div#box_layer_bg') as HTMLDivElement
         bg.style.display = 'flex'
         wrap.style.display = 'flex'
@@ -134,8 +97,6 @@ function addSettings ()
         modal.addEventListener('click', hide)
         box_body.append(settings.genSettings())
     })
-
-
 }
 function checkMenu ()
 {
@@ -143,22 +104,12 @@ function checkMenu ()
     if(document.querySelector("#top_profile_menu"))
     {
         addSettings()
-
-        const info = document.createElement('a')
-        info.classList.add("chat_tab_wrap")
-        window.unsafeWindow.Chat.wrap.prepend(info)
-        const chat_onl_cont = document.createElement('div')
-        chat_onl_cont.classList.add("chat_onl_cont")
-        info.append(chat_onl_cont)
-        const chat_onl = document.createElement('div')
-        //chat_onl.classList.add("chat_onl")
-        chat_onl.style.color = "#b2b2b2"
-        chat_onl_cont.append(chat_onl)
+        const chat_onl = h('div', { css:'color:#b2b2b2;'}, "0")
         chat_onl.id = "queueCount"
-        chat_onl.innerHTML = "0";
-        //info.innerHTML = `<div class="chat_onl_cont"><div class="chat_onl" id="chat_onl">4</div></div>`
+        const chat_onl_cont = h('div', { class: 'chat_onl_cont' }, chat_onl)
+        const info = h('a', {class:'chat_tab_wrap'}, chat_onl_cont)
+        window.unsafeWindow.Chat.wrap.prepend(info)
     }
-    clearInterval(interval)
 }
-let interval = setInterval(checkMenu, 100)
+setTimeout(checkMenu, 700)
 
