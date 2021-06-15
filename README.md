@@ -1,4 +1,7 @@
+
 # [install](https://raw.githubusercontent.com/Slowmoney/vk_music_script/master/dist/script.user.js)
+
+## Установить [violentmonkey](https://violentmonkey.github.io/get-it/) или [tampermonkey](https://www.tampermonkey.net/)
 
 ![Inline](/img/inline.png)
 ![Album](/img/album.png)

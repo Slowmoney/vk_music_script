@@ -32,15 +32,10 @@ const config: webpack.Configuration = {
     extensions: [".ts", ".js"],
   },
   plugins: [
-/*     new webpack.BannerPlugin({
-      banner: fs.readFileSync(path.resolve(__dirname, "src/index.ts"), "utf-8").replace(/(==\/UserScript==)[\s\S]+$/, "$1"),
-      entryOnly: true,
-      raw: true
-    }), */
      new WebpackUserscript({
         headers: {
           name: 'Vk music downloader',
-          version: '14.06.2021.02.06',
+          version: `${new Date().getDate()}.${new Date().getMonth()+1}.${new Date().getFullYear()}.${new Date().getHours()}.${new Date().getMinutes()}`,
           match: '*://*.vk.com/*',
           grant: [
             'GM_setValue',
