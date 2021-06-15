@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Vk music downloader
-// @version 15.6.2021.11.16
+// @version 15.6.2021.13.33
 // @match *://*.vk.com/*
 // @grant GM_setValue
 // @grant GM_getValue
