@@ -104,7 +104,7 @@ function checkMenu ()
     if(document.querySelector("#top_profile_menu"))
     {
         addSettings()
-        const chat_onl = h('div', { css:'color:#b2b2b2;'}, "0")
+        const chat_onl = h('div', { class:'chat_onl', css:'color:#b2b2b2;'}, "0")
         chat_onl.id = "queueCount"
         const chat_onl_cont = h('div', { class: 'chat_onl_cont' }, chat_onl)
         const info = h('a', {class:'chat_tab_wrap'}, chat_onl_cont)
